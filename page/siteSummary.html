@@ -1,0 +1,116 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+	<meta name="renderer" content="webkit|ie-comp|ie-stand">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta http-equiv="Cache-Control" content="no-siteapp" />
+    <title>网站概况</title>
+    
+  </head>
+  
+  <body>
+	<div id="visit" style="width: 600px;height:400px;"></div>
+	
+  </body>
+  
+  <script type="text/javascript" src="../common/js/common.js"></script>
+    <script type="text/javascript">
+    		//访问趋势图
+    		//http://192.168.169.129/piwik/index.php?module=API&method=VisitsSummary.getVisits&idSite=1&period=day&date=last7&format=json&token_auth=e71ba827b18991f694bc0929508c3dfb&translateColumnNames=1
+    		function changeMenu(){
+    			parent.changeMenu("menu-child-33");
+    		}
+    		
+    		$(document).ready(function(){
+    			var visitChart;
+    			init_visit();
+    			ajax_visit();
+    		});
+    		
+    		// 初始化访客趋势图
+    		function init_visit(){
+	        visitChart = echarts.init(document.getElementById('visit'));
+	        var option = {
+	            title: {
+			        text: '访客趋势图'
+			    },
+			    tooltip: {
+			        trigger: 'axis'
+			    },
+			    legend: {
+			    },
+			    grid: {
+//			        left: '3%',
+//			        right: '3%',
+//			        bottom: '3%',
+//			        containLabel: true
+			    },
+			    toolbox: {
+			        feature: {
+			            saveAsImage: {}
+			        }
+			    },
+			    xAxis: {
+			        type: 'category',
+			        boundaryGap: false,
+			    },
+			    yAxis: {
+			        type: 'value'
+			    },
+			    series: [
+			    ]
+	      };
+	        visitChart.setOption(option);
+    		}
+    		
+    		function ajax_visit(){
+    			//var param_visits = {module:"API",method:"VisitsSummary.getVisits",idSite:"1",period:"day",date:"last30",format:"json",token_auth:token_auth,translateColumnNames:"1"};
+    			//var param_uniqueVisitors = {module:"API",method:"VisitsSummary.getUniqueVisitors",idSite:"1",period:"day",date:"last30",format:"json",token_auth:token_auth};
+    			var param_visits = "module=API&method=VisitsSummary.getVisits&idSite=1&period=day&date=last7&format=json&token_auth="+token_auth+"&translateColumnNames=1";
+    			var param_uniqueVisitors = "module=API&method=VisitsSummary.getUniqueVisitors&idSite=1&period=day&date=last7&format=json&token_auth="+token_auth;
+    			var urls = new Array();
+    			urls.push(encodeURI(param_visits));
+    			urls.push(encodeURI(param_uniqueVisitors));
+    			var param = {module:"API",method:"API.getBulkRequest",format:"json",urls:urls};
+    			ajax_jsonp(piwik_url, param, function(data){
+    				data = eval(data);
+				var categories = new Array();
+				var datas = new Array();
+				var visit_data = data[0];
+				for(var cat in visit_data){
+					categories.push(cat);
+					datas.push(visit_data[cat]);
+				}
+				var uniqueVisitors_data = data[1];
+				var categories1 = new Array();
+				var datas1 = new Array();
+				for(var cat1 in uniqueVisitors_data){
+					categories1.push(cat1);
+					datas1.push(uniqueVisitors_data[cat1]);
+				}
+				var option = {
+					legend: {
+			        		data:['访问',"唯一访客"]
+			    		},
+			    		xAxis: {
+			    			data:categories
+			    		},
+			    		series:[{
+			    			name:'访问',
+			            type:'line',
+			            //stack: '总量',
+			            data:datas
+			    		},{
+			    			name:'唯一访客',
+			            type:'line',
+			            //stack: '总量',
+			            data:datas1
+			    		}]
+				};
+				visitChart.setOption(option);
+    			});
+    		}
+    </script>
+</html>
