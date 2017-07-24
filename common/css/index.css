@@ -51,11 +51,11 @@ a cite{font-style: normal; *cursor:pointer;}
 
 
 /* login */
-.login-bg{background: url(../image/login-bg-8.jpg) no-repeat center center fixed;background-size:100% 100%;}
-.login-box {width: 450px;height: 330px;margin: 10% auto;background-color: rgba(255, 255, 255, 0.407843);border-radius: 10px;color: aliceblue;}
-.login-box header {height: 39px;padding: 10px;border-bottom: 1px solid aliceblue;}
+.login-bg{background: url(../image/login-bg-9.jpg) no-repeat center center fixed;background-size:100% 100%;}
+.login-box {width: 450px;height: 330px;margin: 15% auto;background-color: rgba(255, 255, 255, 0.407843);border-radius: 10px;color: aliceblue;}
+.login-box header {height: 39px;padding: 10px;}
 .login-box header h1 {text-align: center;font-size: 25px;line-height: 40px;}
-.login-box .login-main {height: 185px;padding: 30px 90px 0;}
+.login-box .login-main {height: 185px;padding: 30px 90px 0;margin-top: 30px;}
 .login-main .layui-form-item {position: relative;}
 .login-main .layui-form-item .login-icon {position: absolute;color: #ccc;top: 10px;left: 10px;}
 .login-main .layui-form-item input {padding-left: 34px;}

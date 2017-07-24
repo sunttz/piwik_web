@@ -6,130 +6,106 @@
 	<meta name="renderer" content="webkit|ie-comp|ie-stand">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 	<meta http-equiv="Cache-Control" content="no-siteapp" />
-	<meta name="keywords" content="scclui框架">
-	<meta name="description" content="scclui为轻量级的网站后台管理系统模版。">
-    <title>首页</title>
+    <title>登录页</title>
 	
 	<link rel="stylesheet" href="../common/layui/css/layui.css">
-	<link rel="stylesheet" href="../common/css/sccl.css">
+	<link rel="stylesheet" href="../common/css/index.css">
     
   </head>
   
   <body class="login-bg">
     <div class="login-box">
         <header>
-            <h1>框架后台管理系统</h1>
+            <h1>网站访问统计系统</h1>
         </header>
-        <div class="login-main">
-			<form action="/manage/login" class="layui-form" method="post">
-				<input name="__RequestVerificationToken" type="hidden" value="">                
-				<div class="layui-form-item">
-					<label class="login-icon">
-						<i class="layui-icon"></i>
-					</label>
-					<input type="text" name="userName" lay-verify="userName" autocomplete="off" placeholder="这里输入登录名" class="layui-input">
-				</div>
-				<div class="layui-form-item">
-					<label class="login-icon">
-						<i class="layui-icon"></i>
-					</label>
-					<input type="password" name="password" lay-verify="password" autocomplete="off" placeholder="这里输入密码" class="layui-input">
-				</div>
-				<div class="layui-form-item">
-					<div class="pull-left login-remember">
-						<label>记住帐号？</label>
+        <div class="login-main">      
+			<div class="layui-form-item">
+				<label class="login-icon">
+					<i class="glyphicon glyphicon-user"></i>
+				</label>
+				<input type="text" name="userName" id="userName" lay-verify="userName" autocomplete="off" placeholder="这里输入登录名" class="layui-input">
+			</div>
+			<div class="layui-form-item">
+				<label class="login-icon">
+					<i class="glyphicon glyphicon-lock"></i>
+				</label>
+				<input type="password" name="password" id="password" lay-verify="password" autocomplete="off" placeholder="这里输入密码" class="layui-input">
+			</div>
+			<div class="layui-form-item">
+				<!--<div class="pull-left login-remember">
+					<label>记住帐号？</label>
 
-						<input type="checkbox" name="rememberMe" value="true" lay-skin="switch" title="记住帐号"><div class="layui-unselect layui-form-switch"><i></i></div>
-					</div>
-					<div class="pull-right">
-						<button class="layui-btn layui-btn-primary" lay-submit="" lay-filter="login">
-							<i class="layui-icon"></i> 登录
-						</button>
-					</div>
-					<div class="clear"></div>
+					<input type="checkbox" name="rememberMe" value="true" lay-skin="switch" title="记住帐号"><div class="layui-unselect layui-form-switch"><i></i></div>
+				</div>-->
+				
+				<div id="errorMsg" class="pull-left alert alert-danger" style="padding: 8px;display: none;"></div>	
+				
+				<div class="pull-right">
+					<button class="layui-btn layui-btn-primary" type="button" onclick="submit();">
+						<i class="glyphicon glyphicon-check"></i> 登录
+					</button>
 				</div>
-			</form>        
+				<div class="clear"></div>
+			</div>		       
 		</div>
-        <footer>
-            <p>xuan © www.mycodes.net</p>
-        </footer>
-    </div>
-    <script type="text/html" id="code-temp">
-        <div class="login-code-box">
-            <input type="text" class="layui-input" id="code" />
-            <img id="valiCode" src="/manage/validatecode?v=636150612041789540" alt="验证码" />
-        </div>
-    </script>
+        
+   </div>
     <script src="../common/layui/layui.js"></script>
     <script>
-        layui.use(['layer', 'form'], function () {
-            var layer = layui.layer,
-				$ = layui.jquery,
-				form = layui.form();
-
-            form.verify({
-                userName: function (value) {
-                    if (value === '')
-                        return '请输入用户名';
-                },
-                password: function (value) {
-                    if (value === '')
-                        return '请输入密码';
-                }
-            });
-
-            var errorCount = 0;
-
-            form.on('submit(login)', function (data) {
-				window.location.href = "..common/page/index.html";
-                /*if (errorCount > 5) {
-                    layer.open({
-                        title: '<img src="' + location.origin + '/Plugins/layui/images/face/7.gif" alt="[害羞]">输入验证码',
-                        type: 1,
-                        content: document.getElementById('code-temp').innerHTML,
-                        btn: ['确定'],
-                        yes: function (index, layero) {
-                            var $code = $('#code');
-                            if ($code.val() === '') {
-                                layer.msg('输入验证码啦，让我知道你是人类。');
-                                isCheck = false;
-                            } else {
-                                $('input[name=verifyCode]').val();
-                                var params = data.field;
-                                params.verifyCode = $code.val();
-                                submit($,params);
-                                layer.close(index);
-                            }
-                        },
-                        area: ['250px', '150px']
-                    });
-                    $('#valiCode').off('click').on('click', function () {
-                        this.src = '/manage/validatecode?v=' + new Date().getTime();
-                    });
-                }else{
-                    submit($,data.field);
-                }
-
-                return false;*/
-            });
-
-        });
-		
-        /*function submit($,params){
-            $.post('/manage/login',params , function (res) {
-                if (!res.success) {
-                    if (res.data !== undefined)
-                        errorCount = res.data.errorCount
-                    layer.msg(res.message,{icon:2});
-                }else
-                {
-                    layer.msg(res.message,{icon:1},function(index){
-                        layer.close(index);
-                        location.href='/manage';
-                    });
-                }
-            }, 'json');
-        }*/
+        function submit(){
+        		$("#errorMsg").css("display","none");
+        		// 检查用户名密码是否为空
+        		var userName = $("#userName").val();
+        		var password = $("#password").val();
+        		if(userName == ""){
+        			$("#errorMsg").text("登录名不可为空").css("display","block");
+        			return;
+        		}
+        		if(password == ""){
+        			$("#errorMsg").text("密码不可为空").css("display","block");
+        			return;
+        		}
+        		// 查询用户名是否存在
+        		var userExists_param = {module:"API",method:"UsersManager.userExists",userLogin:userName,format:"json",token_auth:token_auth};
+        		ajax_jsonp(piwik_url, userExists_param, function(data_userExists){
+        			data = eval(data_userExists);
+        			if(!data.value){
+        				$("#errorMsg").text("登录用户不存在").css("display","block");
+        				return;
+        			}else{
+        				// 判断密码是否正确(获取用户tokenAuth，判断该tokenAuth是否有效)
+		        		var getTokenAuth_param = {module:"API",method:"UsersManager.getTokenAuth",userLogin:userName,md5Password:hex_md5(password),format:"json"};
+		        		ajax_jsonp(piwik_url, getTokenAuth_param, function(data_getTokenAuth){
+		        			data = eval(data_getTokenAuth);
+		        			var token_auth_tmp = data.value;
+		        			// 利用token_auth_tmp调用获取用户信息接口，成功则密码正确
+		        			var getUser_param = {module:"API",method:"UsersManager.getUser",userLogin:userName,format:"json",token_auth:token_auth_tmp};
+		        			ajax_jsonp(piwik_url,getUser_param,function(data_getUser){
+		        				data = eval(data_getUser);
+		        				if(data.result && data.result == "error"){
+		        					$("#errorMsg").text("密码错误").css("display","block");
+        							return;
+		        				}else{
+		        					user_token_auth = token_auth_tmp;
+		        					// 获取用户的网站权限
+					        		var getSitesAccessFromUser_param = {module:"API",method:"UsersManager.getSitesAccessFromUser",userLogin:userName,format:"json",token_auth:token_auth};
+							        	ajax_jsonp(piwik_url,getSitesAccessFromUser_param,function(data_getSitesAccessFromUser){
+							        		data = eval(data_getSitesAccessFromUser);
+							        		// 跳转首页
+							        		window.location.href="index.html?userName="+userName;
+							        	});
+		        				}
+		        			});
+		        		});
+        			}
+        		});
+        		
+        		
+        		
+        }
+        
     </script>
   </body>
+  <script type="text/javascript" src="../common/js/common.js"></script>
+  <script type="text/javascript" src="../common/lib/md5.js"></script>
 </html>

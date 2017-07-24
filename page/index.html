@@ -37,7 +37,7 @@
 				</li>
 				<li class="header-bar-role"><a href="#">Hi</a></li>
 				<li class="header-bar-nav">
-					<a href="javascript:;">admin<i class="icon-font" style="margin-left:5px;">&#xe60c;</i></a>
+					<a href="javascript:;" id="userName">admin<i class="icon-font" style="margin-left:5px;">&#xe60c;</i></a>
 					<ul class="header-dropdown-menu">
 						<li><a href="javascript:;">个人信息</a></li>
 						<li><a href="javascript:;">切换账户</a></li>
@@ -88,10 +88,22 @@
 	</div>
 	<script type="text/javascript" src="../common/js/index.js"></script>
 	<script type="text/javascript">
+    		var userName = GetQueryString("userName");
+    		if(userName == null || userName == ""){
+    			window.location.href = "login.html";
+    		}else{
+    			// 校验用户名
+    			$("#userName").text(userName);
+    		}
+		function GetQueryString(name){
+		     var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+		     var r = window.location.search.substr(1).match(reg);
+		     if(r!=null)return  unescape(r[2]); return null;
+		}
 		// 切换菜单
 		function changeMenu(childMenu){
     			$("#"+childMenu).parent('li').addClass("active");
     		}
-	</script>
+    </script>
   </body>
 </html>
