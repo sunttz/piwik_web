@@ -1,10 +1,10 @@
 /*设置cookie*/
-function setCookie(name, value, days){
-	if(days == null || days == ''){
-		days = 300;
+function setCookie(name, value, min){
+	if(min == null || min == ''){
+		min = 30;
 	}
 	var exp  = new Date();
-	exp.setTime(exp.getTime() + days*24*60*60*1000);
+	exp.setTime(exp.getTime() + min*60*1000);
 	document.cookie = name + "="+ escape (value) + "; path=/;expires=" + exp.toGMTString();
 }
 
@@ -15,6 +15,11 @@ function getCookie(name) {
 		return unescape(arr[2]); 
 	else 
 		return null; 
+}
+
+//清除cookie    
+function clearCookie(name) {    
+    setCookie(name, "", -1);    
 }
 
 /*ajax请求*/

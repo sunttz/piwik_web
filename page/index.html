@@ -21,27 +21,25 @@
 			<ul class="header-bar">
 				<li>
 					<div class="btn-group">
-						<button type="button" class="btn btn-default">第一个网站访问系统</button>
+						<button id="firstSite" type="button" class="btn btn-default">网站统计</button>
 						<button type="button" class="btn btn-default dropdown-toggle" 
 								data-toggle="dropdown">
 							<span class="caret"></span>
-							<span class="sr-only">切换下拉菜单</span>
+							<span class="sr-only">切换</span>
 						</button>
-						<ul class="dropdown-menu" role="menu">
-							<li><a href="#">功能</a></li>
-							<li><a href="#">另一个功能</a></li>
-							<li><a href="#">其他</a></li>
-							<li><a href="#">分离的链接</a></li>
+						<ul id="siteMenu" class="dropdown-menu" role="menu">
+							
 						</ul>
 					</div>
 				</li>
-				<li class="header-bar-role"><a href="#">Hi</a></li>
+				
+				
+				<li class="header-bar-role" style="margin-left: 10px;">Hi</li>
 				<li class="header-bar-nav">
 					<a href="javascript:;" id="userName">admin<i class="icon-font" style="margin-left:5px;">&#xe60c;</i></a>
 					<ul class="header-dropdown-menu">
-						<li><a href="javascript:;">个人信息</a></li>
-						<li><a href="javascript:;">切换账户</a></li>
-						<li><a href="javascript:;">退出</a></li>
+						<li><a href="javascript:showPersonInfo()">个人信息</a></li>
+						<li><a href="javascript:logout();">退出</a></li>
 					</ul>
 				</li>
 				<!--
@@ -56,7 +54,6 @@
 				</li>
 				-->
 			</ul>
-			
 		</header>
 		<aside class="layout-side">
 			<ul class="side-menu">
@@ -86,24 +83,105 @@
 		<div class="layout-footer">@2016 0.1 www.mycodes.net</div>
 		-->
 	</div>
+	<!-- Modal -->
+	<div class="modal fade" id="personInfoModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	  <div class="modal-dialog" role="document" style="margin-top: 100px;">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	        <h4 class="modal-title" id="myModalLabel">个人信息</h4>
+	      </div>
+	      <div class="modal-body">
+	        <table id="personInfoTable" class="table table-striped">
+			</table>
+	        
+	      </div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+	      </div>
+	    </div>
+	  </div>
+	</div>
 	<script type="text/javascript" src="../common/js/index.js"></script>
 	<script type="text/javascript">
-    		var userName = GetQueryString("userName");
-    		if(userName == null || userName == ""){
-    			window.location.href = "login.html";
-    		}else{
-    			// 校验用户名
-    			$("#userName").text(userName);
+		$(document).ready(function(){
+			// 判断是否登录
+			var userName = getCookie("userName");
+			var uta = getCookie("user_token_auth");
+			var sites = getCookie("sites");
+	    		if(userName == null || userName == "" || uta == null || uta == "" || sites == null){
+	    			window.location.href = "login.html";
+	    		}else{
+	    			$("#userName").text(userName);
+	    			loginUser = userName;
+	    			user_token_auth = uta;
+	    			// 设置访问网站菜单
+	    			sites = eval(sites);
+	    			// 获取所有网站信息
+	    			var allSites = {};
+	    			var getAllSites_param = {module:"API",method:"SitesManager.getAllSites",format:"json",token_auth:token_auth};
+	    			ajax_jsonp(piwik_url, getAllSites_param, function(data){
+	    				data = eval(data);
+	    				for(var j=0;j<data.length;j++){
+	    					var idsite = data[j].idsite;
+	    					var name = data[j].name;
+	    					allSites[idsite] = name;
+	    				}
+	    				// 设置当前用户可访问网站菜单
+	    				var siteHtml = "";
+	    				if(allSites != null){
+	    					for(var i=0; i<sites.length;i++){
+			    				var siteId = sites[i].site;
+			    				var siteName = allSites[siteId];
+			    				siteHtml+="<li><a href='javascript:changeSite("+siteId+",\""+siteName+"\")'>"+siteName+"</a></li>";
+			    				if(i==0){
+			    					$("#firstSite").text(siteName);
+			    				}
+			    			}
+	    					$("#siteMenu").html(siteHtml);
+	    				}
+	    			});
+	    			
+	    		}
+	    		
+		})
+    		
+    		// 登出
+    		function logout(){
+    			clearCookie("userName");
+    			window.location.href="login.html";
     		}
-		function GetQueryString(name){
-		     var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
-		     var r = window.location.search.substr(1).match(reg);
-		     if(r!=null)return  unescape(r[2]); return null;
+    		// 个人信息
+		function showPersonInfo(){
+			if(loginUser != null && loginUser != ""){
+				var getUser_param = {module:"API",method:"UsersManager.getUser",userLogin:loginUser,format:"json",token_auth:user_token_auth};
+				ajax_jsonp(piwik_url, getUser_param, function(data){
+					data_getUser = eval(data[0]);
+					var accessName = data_getUser.superuser_access=="0"?"否":"是";
+					var html = "<tbody>"+
+									"<tr><td>用户名</td><td>"+data_getUser.login+"</td></tr>"+
+									"<tr><td>别名</td><td>"+data_getUser.alias+"</td></tr>"+
+									"<tr><td>邮箱</td><td>"+data_getUser.email+"</td></tr>"+
+									"<tr><td>管理员权限</td><td>"+accessName+"</td></tr>"+
+									"<tr><td>注册时间</td><td>"+data_getUser.date_registered+"</td></tr>"+
+								"</tbody>";
+					$("#personInfoTable").html(html);
+				});
+			}else{
+				$("#personInfoModal .modal-body").html("数据获取异常！");
+			}
+			$("#personInfoModal").modal();
 		}
 		// 切换菜单
 		function changeMenu(childMenu){
     			$("#"+childMenu).parent('li').addClass("active");
     		}
+		
+		// 切换网站
+		function changeSite(siteId,siteName){
+			$("#firstSite").text(siteName);
+			
+		}
     </script>
   </body>
 </html>

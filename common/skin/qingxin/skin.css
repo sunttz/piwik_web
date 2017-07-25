@@ -7,11 +7,11 @@
 .layout-side{background-color: #f2f2f2;color: #333;z-index:999;border-right:1px solid #ddd;}
 .side-menu{background-color: #f2f2f2;}
 .side-menu li a i{color: #b6b7b8;}
-.side-menu .menu-item a{color: #333;border-bottom: 1px solid #e5e5e5;}
+.side-menu .menu-item a{color: #333;border-bottom: 1px solid #e5e5e5;text-decoration:none;}
 .side-menu .menu-item:hover > a, .side-menu .menu-item.active > a{color: #33AECC; background: #f2f2f2; border-left-color: #33AECC;} 
 .side-menu .menu-header{color: #333; background: #f2f2f2;border-bottom: 1px solid #e5e5e5;height:39px;line-height:39px;} 
 .side-menu .menu-item .label{color: #fff;background: #33AECC;}
-.side-menu .menu-item-child li a{color: #333;}
+.side-menu .menu-item-child li a{color: #333;text-decoration:none;}
 .side-menu .menu-item-child li.active > a, .side-menu .menu-item-child li > a:hover{color: #33AECC;}
 /*菜单收缩*/
 .layout-side-arrow{background-color:#f2f2f2;left:201px;border-left:none;}

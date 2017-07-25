@@ -10,7 +10,9 @@
 	
 	<link rel="stylesheet" href="../common/layui/css/layui.css">
 	<link rel="stylesheet" href="../common/css/index.css">
-    
+	
+    <script type="text/javascript" src="../common/js/common.js"></script>
+  	<script type="text/javascript" src="../common/lib/md5.js"></script>
   </head>
   
   <body class="login-bg">
@@ -34,11 +36,10 @@
 			<div class="layui-form-item">
 				<!--<div class="pull-left login-remember">
 					<label>记住帐号？</label>
-
-					<input type="checkbox" name="rememberMe" value="true" lay-skin="switch" title="记住帐号"><div class="layui-unselect layui-form-switch"><i></i></div>
+					<input id="rememberName" type="checkbox" checked />
 				</div>-->
 				
-				<div id="errorMsg" class="pull-left alert alert-danger" style="padding: 8px;display: none;"></div>	
+				<div id="errorMsg" class="pull-left alert alert-danger" style="padding: 8px;display: none;"></div>
 				
 				<div class="pull-right">
 					<button class="layui-btn layui-btn-primary" type="button" onclick="submit();">
@@ -48,7 +49,6 @@
 				<div class="clear"></div>
 			</div>		       
 		</div>
-        
    </div>
     <script src="../common/layui/layui.js"></script>
     <script>
@@ -86,26 +86,24 @@
 		        					$("#errorMsg").text("密码错误").css("display","block");
         							return;
 		        				}else{
-		        					user_token_auth = token_auth_tmp;
 		        					// 获取用户的网站权限
 					        		var getSitesAccessFromUser_param = {module:"API",method:"UsersManager.getSitesAccessFromUser",userLogin:userName,format:"json",token_auth:token_auth};
-							        	ajax_jsonp(piwik_url,getSitesAccessFromUser_param,function(data_getSitesAccessFromUser){
-							        		data = eval(data_getSitesAccessFromUser);
-							        		// 跳转首页
-							        		window.location.href="index.html?userName="+userName;
-							        	});
+						        	ajax_jsonp(piwik_url,getSitesAccessFromUser_param,function(data_getSitesAccessFromUser){
+						        		data = eval(data_getSitesAccessFromUser);
+						        		// 跳转首页
+						        		setCookie("userName",userName, 50);
+						        		setCookie("user_token_auth",token_auth_tmp, 50);
+						        		setCookie("sites",JSON.stringify(data),50);
+						        		window.location.href="index.html";
+						        	});
 		        				}
 		        			});
 		        		});
         			}
         		});
-        		
-        		
-        		
         }
         
     </script>
   </body>
-  <script type="text/javascript" src="../common/js/common.js"></script>
-  <script type="text/javascript" src="../common/lib/md5.js"></script>
+  
 </html>
