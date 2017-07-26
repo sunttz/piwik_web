@@ -49,4 +49,11 @@ function ajax_jsonp(url, param, callback) {
 			alert("请求异常.."); 
 		}
 	});  
-} 
+}
+
+/*获取地址栏参数*/
+function getQueryString(name){
+	var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+	var r = window.location.search.substr(1).match(reg);
+	if(r!=null) return unescape(r[2]); return null;
+}

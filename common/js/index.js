@@ -72,9 +72,10 @@ function addIframe(cur){
 		var tab = "<a href='javascript:;' class='content-tab active' data-id='"+h+"'>"+ label +" <i class='icon-font'>&#xe617;</i></a>";
 		$(".content-tab").removeClass("active");
 		$(".tab-nav-content").append(tab);
-		var iframe = "<iframe class='body-iframe' name='iframe"+ m +"' width='100%' height='99%' src='"+ h +"' frameborder='0' data-id='"+ h +"' seamless></iframe>";
-		$(".layout-main-body").find("iframe.body-iframe").hide().parents(".layout-main-body").append(iframe);
-		addTab($(".content-tab.active"));
+		var iframe = "<iframe class='body-iframe' id='iframe' name='iframe' width='100%' height='99%' src='"+ h +"' frameborder='0' data-id='"+ h +"' seamless></iframe>";
+		$(".layout-main-body").html(iframe);
+		//$(".layout-main-body").find("iframe.body-iframe").hide().parents(".layout-main-body").append(iframe);
+		//addTab($(".content-tab.active"));
 	}
 	return false;
 }
@@ -411,7 +412,7 @@ $(function(){
 						{"id":"44","name":"地域分布","parentId":"43","url":"home3.html","icon":"&#xe602;","order":"1","isHeader":"0","childMenus":""},
 						{"id":"45","name":"部门分布","parentId":"43","url":"home3.html","icon":"&#xe602;","order":"2","isHeader":"0","childMenus":""},
 						{"id":"46","name":"浏览器分布","parentId":"43","url":"home3.html","icon":"&#xe602;","order":"3","isHeader":"0","childMenus":""},
-						{"id":"47","name":"自定义变量","parentId":"43","url":"","icon":"&#xe602;","order":"4","isHeader":"0","childMenus":""}
+						{"id":"47","name":"自定义变量","parentId":"43","url":"a.html","icon":"&#xe602;","order":"4","isHeader":"0","childMenus":""}
 					]}
 				]}
 //				{"id":"2","name":"框架案例","parentId":"0","url":"","icon":"","order":"2","isHeader":"1","childMenus":[

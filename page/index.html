@@ -76,7 +76,7 @@
 			</div>
 			-->
 			<div class="layout-main-body">
-				<iframe class="body-iframe" name="iframe0" width="100%" height="99%" src="siteSummary.html" frameborder="0" data-id="siteSummary.html" seamless></iframe>
+				<iframe class="body-iframe" name="iframe" id="iframe" width="100%" height="99%" src="" frameborder="0" data-id="siteSummary.html" seamless></iframe>
 			</div>
 		</section>
 		<!--
@@ -115,7 +115,7 @@
 	    			$("#userName").text(userName);
 	    			loginUser = userName;
 	    			user_token_auth = uta;
-	    			// 设置访问网站菜单
+	    			// 设置访问网站列表
 	    			sites = eval(sites);
 	    			// 获取所有网站信息
 	    			var allSites = {};
@@ -127,7 +127,7 @@
 	    					var name = data[j].name;
 	    					allSites[idsite] = name;
 	    				}
-	    				// 设置当前用户可访问网站菜单
+	    				// 设置当前用户可访问网站列表
 	    				var siteHtml = "";
 	    				if(allSites != null){
 	    					for(var i=0; i<sites.length;i++){
@@ -136,6 +136,16 @@
 			    				siteHtml+="<li><a href='javascript:changeSite("+siteId+",\""+siteName+"\")'>"+siteName+"</a></li>";
 			    				if(i==0){
 			    					$("#firstSite").text(siteName);
+			    					// 设置默认展示该网站信息
+			    					$("#iframe").attr("src","siteSummary.html?siteId="+siteId+"&t="+user_token_auth);
+			    					// 设置菜单节点的网站siteId参数
+			    					$(".side-menu .menu-item a").each(function(){
+			    						var href = $(this).attr("href");
+			    						if(href != null && href != ""){
+			    							href = href + "?siteId=" + siteId + "&t="+user_token_auth;
+			    							$(this).attr("href", href);
+			    						}
+			    					});
 			    				}
 			    			}
 	    					$("#siteMenu").html(siteHtml);
@@ -179,8 +189,23 @@
 		
 		// 切换网站
 		function changeSite(siteId,siteName){
+			// 设置默认展示该网站信息
 			$("#firstSite").text(siteName);
-			
+			$("#iframe").attr("src","siteSummary.html?siteId="+siteId+"&t="+user_token_auth);
+			// 设置菜单节点的网站siteId参数
+			$(".side-menu .menu-item a").each(function(){
+				var href = $(this).attr("href");
+				if(href != null && href != ""){
+					var inx = href.indexOf("?");
+					if(inx > 0){
+						href = href.substring(0, inx);
+					}
+					href = href + "?siteId=" + siteId + "&t=" + user_token_auth;
+					$(this).attr("href", href);
+				}
+			});
+			// 菜单树还原到默认
+			$(".side-menu .menu-item.active").removeClass("active").find("ul.menu-open").removeClass("menu-open").css("display","none");
 		}
     </script>
   </body>

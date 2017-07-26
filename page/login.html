@@ -34,12 +34,10 @@
 				<input type="password" name="password" id="password" lay-verify="password" autocomplete="off" placeholder="这里输入密码" class="layui-input">
 			</div>
 			<div class="layui-form-item">
-				<!--<div class="pull-left login-remember">
+				<div class="pull-left login-remember">
 					<label>记住帐号？</label>
 					<input id="rememberName" type="checkbox" checked />
-				</div>-->
-				
-				<div id="errorMsg" class="pull-left alert alert-danger" style="padding: 8px;display: none;"></div>
+				</div>
 				
 				<div class="pull-right">
 					<button class="layui-btn layui-btn-primary" type="button" onclick="submit();">
@@ -47,11 +45,24 @@
 					</button>
 				</div>
 				<div class="clear"></div>
+				<div id="errorMsg" class="pull-left alert alert-danger" style="padding: 8px;display: none;"></div>
 			</div>		       
 		</div>
    </div>
     <script src="../common/layui/layui.js"></script>
-    <script>
+    <script type="text/javascript">
+    		$(document).ready(function(){
+    			var rememberName = getCookie("rememberName");
+    			if(rememberName != null && rememberName != ""){
+    				$("#userName").val(rememberName);
+    			}
+    			
+    			$("#userName,#password").focus(function(){
+	    			$("#errorMsg").css("display","none");
+	    		});
+    		});
+    		
+    		
         function submit(){
         		$("#errorMsg").css("display","none");
         		// 检查用户名密码是否为空
@@ -90,6 +101,12 @@
 					        		var getSitesAccessFromUser_param = {module:"API",method:"UsersManager.getSitesAccessFromUser",userLogin:userName,format:"json",token_auth:token_auth};
 						        	ajax_jsonp(piwik_url,getSitesAccessFromUser_param,function(data_getSitesAccessFromUser){
 						        		data = eval(data_getSitesAccessFromUser);
+						        		// 记住密码
+						        		if($("#rememberName").is(":checked")){
+						        			setCookie("rememberName", userName, 30*24*60); // 30天
+						        		}else{
+						        			clearCookie("rememberName");
+						        		}
 						        		// 跳转首页
 						        		setCookie("userName",userName, 50);
 						        		setCookie("user_token_auth",token_auth_tmp, 50);
