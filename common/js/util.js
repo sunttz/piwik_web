@@ -57,3 +57,8 @@ function getQueryString(name){
 	var r = window.location.search.substr(1).match(reg);
 	if(r!=null) return unescape(r[2]); return null;
 }
+
+/*获取批量请求参数*/
+function getBulkRequestParam(urls){
+	return {module:"API",method:"API.getBulkRequest",format:"json",urls:urls};
+}

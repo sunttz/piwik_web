@@ -11,15 +11,93 @@
     		var idSite = "";
     		var t = "";
     </script>
+    <script type="text/javascript" src="../common/js/common.js"></script>
+    <style type="text/css">
+    		.main-content {border-left: none;border-right: none;padding: 15px;background-color: #ececec;}
+		.table-list {border: 1px solid #dedede;background-color: #fff;}
+		.today-flow {color: black;font-weight: bold;padding-bottom: 0px;font-size: 16px;padding-left: 10px;}
+		.overview-gap {clear: both; background-color: #ececec; height: 16px;}
+		.overview-detail{}
+		.control-bar-wrapper{border: 1px solid #dfe0e0; padding: 0;background-color: #fff;}
+		.index-site{background-color: #ececec; height: 810px;}
+		.table-grid-item {margin-top: 1px; background-color: #fff; height: 392px;}
+		#today-flow-table tr.thead td{border-top:0px;} 
+    </style>
   </head>
   
   <body>
-	<div id="visit" style="width: 600px;height:400px;"></div>
+	<div class="main-content">
+		<!-- 今日流量 -->
+		<div class="table-list">
+			<table id="today-flow-table" class="table table-hover">
+				<caption class="today-flow">今日流量</caption>
+				
+				<tbody>
+					<tr class="thead" style="color: #777;" align="center">
+						<td></td>
+						<td><div data-toggle="tooltip" data-placement="auto" title="页面被查看的次数。用户多次打开同一页面，浏览量值累计。">浏览量(PV)</div></td>
+						<td><div data-toggle="tooltip" data-placement="auto" title="网站独立访客数量。即使一天之内多次访问网站也只会被统计一次。">访客数(UV)</div></td>
+						<td><div data-toggle="tooltip" data-placement="auto" title="访客第一次访问你的网站或者距离上次访问时间超过30分钟，会被统计为新的访问。">访问</div></td>
+						<td><div data-toggle="tooltip" data-placement="auto" title="登录你的网站的用户数量。它是具有用户ID组唯一活跃用户的数量（通过追踪码函数'setUserId'）。">用户数</div></td>
+						<td><div data-toggle="tooltip" data-placement="auto" title="只查看单个页面的百分比，即访客直接从入口页面离开网站。">跳出率</div></td>
+						<td><div data-toggle="tooltip" data-placement="auto" title="访客在一次访问中，平均打开网站的时长。">平均访问时长(秒)</div></td>
+					</tr>
+					<tr class="today" align="center">
+						<td colspan="7"></td>
+					</tr>
+					<tr class="yesterday" align="center">
+						<td colspan="7"></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="overview-gap"></div>
+		<div class="overview-detail">
+			<div id="DateSelectBar">
+				<div class="control-bar-wrapper">
+					<div class="btn-group">
+						<button type="button" class="btn btn-default">今天</button>
+						<button type="button" class="btn btn-default">昨天</button>
+						<button type="button" class="btn btn-default">最近7天</button>
+						<button type="button" class="btn btn-default">最近30天</button>
+					</div>
+				</div>
+			</div>
+			<div class="overview-gap"></div>
+			<div class="index-site">
+				<div class="first-row">
+					<div style="float: left;width: 49%;">
+						<div class="table-grid-item">
+							<div id="visit" style="width: '49%';height:392px;"></div>
+						</div>
+					</div>
+					<div style="float: right;width: 49%;">
+						<div class="table-grid-item">
+							<div id="visit2" style="width: '49%';height:392px;"></div>
+						</div>
+					</div>
+				</div>
+				<div class="overview-gap"></div>
+				<div class="second-row">
+					<div style="float: left;width: 49%;">
+						<div class="table-grid-item">
+							<div id="visit3" style="width: '49%';height:392px;"></div>
+						</div>
+					</div>
+					<div style="float: right;width: 49%;">
+						<div class="table-grid-item">
+							<div id="visit4" style="width: '49%';height:392px;"></div>
+						</div>
+					</div>
+				</div>
+				
+			</div>
+		</div>
+	</div>
 	
   </body>
   
-  <script type="text/javascript" src="../common/js/common.js"></script>
-    <script type="text/javascript">
+<script type="text/javascript">
     		//访问趋势图
     		//http://192.168.169.129/piwik/index.php?module=API&method=VisitsSummary.getVisits&idSite=1&period=day&date=last7&format=json&token_auth=e71ba827b18991f694bc0929508c3dfb&translateColumnNames=1
     		function changeMenu(){
@@ -29,11 +107,40 @@
     		$(document).ready(function(){
     			idSite = getQueryString("siteId");
     			t = getQueryString("t");
-    			
-    			var visitChart;
+    			// 加载今日流量
+    			$("[data-toggle='tooltip']").tooltip();
+    			getTodayFlow();
+    			// 加载访客趋势图
+    			var visitChart = null;
     			init_visit();
     			ajax_visit();
     		});
+    		
+    		// 今日流量
+    		function getTodayFlow(){
+    			var p_t1 = "module=API&method=MultiSites.getOne&idSite="+idSite+"&period=day&date=today&format=JSON&token_auth="+t;
+    			var p_t2 = "module=API&method=VisitsSummary.get&idSite="+idSite+"&period=day&date=today&format=JSON&token_auth="+t;
+    			var p_y1 = "module=API&method=MultiSites.getOne&idSite="+idSite+"&period=day&date=yesterday&format=JSON&token_auth="+t;
+    			var p_y2 = "module=API&method=VisitsSummary.get&idSite="+idSite+"&period=day&date=yesterday&format=JSON&token_auth="+t;
+    			var urls = new Array();
+    			urls.push(encodeURI(p_t1));
+    			urls.push(encodeURI(p_t2));
+    			urls.push(encodeURI(p_y1));
+    			urls.push(encodeURI(p_y2));
+    			var p = getBulkRequestParam(urls);
+    			ajax_jsonp(piwik_url, p, function(data){
+    				data = eval(data);
+    				var ms_t = data[0];
+    				var vs_t = data[1];
+    				var ms_y = data[2];
+    				var vs_y = data[3];
+    				var todayTr = "<td>今日</td><td>"+ms_t["nb_pageviews"]+"</td><td>"+vs_t["nb_uniq_visitors"]+"</td><td>"+vs_t["nb_visits"]+"</td><td>"+vs_t["nb_users"]+"</td><td>"+vs_t["bounce_rate"]+"</td><td>"+vs_t["avg_time_on_site"]+"</td>";
+    				var yesterdayTr = "<td>昨日</td><td>"+ms_y["nb_pageviews"]+"</td><td>"+vs_y["nb_uniq_visitors"]+"</td><td>"+vs_y["nb_visits"]+"</td><td>"+vs_y["nb_users"]+"</td><td>"+vs_y["bounce_rate"]+"</td><td>"+vs_y["avg_time_on_site"]+"</td>";
+    				$("#today-flow-table tr.today").html(todayTr);
+    				$("#today-flow-table tr.yesterday").html(yesterdayTr);
+    			});
+    		}
+    		
     		
     		// 初始化访客趋势图
     		function init_visit(){
@@ -78,6 +185,7 @@
     			urls.push(encodeURI(param_visits));
     			urls.push(encodeURI(param_uniqueVisitors));
     			var param = {module:"API",method:"API.getBulkRequest",format:"json",urls:urls};
+    			visitChart.showLoading();
     			ajax_jsonp(piwik_url, param, function(data){
     				data = eval(data);
 				var categories = new Array();
@@ -113,6 +221,7 @@
 			            data:datas1
 			    		}]
 				};
+				visitChart.hideLoading();
 				visitChart.setOption(option);
     			});
     		}

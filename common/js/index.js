@@ -309,18 +309,18 @@ $(document).on("mouseleave",".header-bar-nav",function(){
 
 /*左侧菜单展开和关闭按钮事件*/
 $(document).on("click",".layout-side-arrow",function(){
-	if($(".layout-side").hasClass("close")){
-		$(".layout-side").removeClass("close");
+	if($(".layout-side").hasClass("close1")){
+		$(".layout-side").removeClass("close1");
 		$(".layout-main").removeClass("full-page");
 		$(".layout-footer").removeClass("full-page");
-		$(this).removeClass("close");
-		$(".layout-side-arrow-icon").removeClass("close");
+		$(this).removeClass("close1");
+		$(".layout-side-arrow-icon").removeClass("close1");
 	}else{
-		$(".layout-side").addClass("close");
+		$(".layout-side").addClass("close1");
 		$(".layout-main").addClass("full-page");
 		$(".layout-footer").addClass("full-page");
-		$(this).addClass("close");
-		$(".layout-side-arrow-icon").addClass("close");
+		$(this).addClass("close1");
+		$(".layout-side-arrow-icon").addClass("close1");
 	}
 });
 
