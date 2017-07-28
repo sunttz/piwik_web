@@ -55,11 +55,11 @@
 		<div class="overview-detail">
 			<div id="DateSelectBar">
 				<div class="control-bar-wrapper">
-					<div class="btn-group">
-						<button type="button" class="btn btn-default">今天</button>
-						<button type="button" class="btn btn-default">昨天</button>
-						<button type="button" class="btn btn-default">最近7天</button>
-						<button type="button" class="btn btn-default">最近30天</button>
+					<div id="dateDiv" class="btn-group">
+						<button type="button" class="btn btn-default" data="last1" onclick="changeDate('last1')">今天</button>
+						<button type="button" class="btn btn-default" data="previous1" onclick="changeDate('previous1')">昨天</button>
+						<button type="button" class="btn btn-default active" data="last7" onclick="changeDate('last7')">最近7天</button>
+						<button type="button" class="btn btn-default" data="last30" onclick="changeDate('last30')">最近30天</button>
 					</div>
 				</div>
 			</div>
@@ -68,7 +68,7 @@
 				<div class="first-row">
 					<div style="float: left;width: 49%;">
 						<div class="table-grid-item">
-							<div id="visit" style="width: '49%';height:392px;"></div>
+							<div id="visitTendency" style="width: '49%';height:392px;"></div>
 						</div>
 					</div>
 					<div style="float: right;width: 49%;">
@@ -111,9 +111,9 @@
     			$("[data-toggle='tooltip']").tooltip();
     			getTodayFlow();
     			// 加载访客趋势图
-    			var visitChart = null;
+    			var visitTendencyChart = null;
     			init_visit();
-    			ajax_visit();
+    			ajax_visit("last7");
     		});
     		
     		// 今日流量
@@ -141,16 +141,22 @@
     			});
     		}
     		
-    		
+    		// 时间切换
+		function changeDate(date){
+			$("#dateDiv .btn").removeClass("active");
+			$("#dateDiv .btn[data="+date+"]").addClass("active");
+			ajax_visit(date);
+		}
+		
     		// 初始化访客趋势图
     		function init_visit(){
-	        visitChart = echarts.init(document.getElementById('visit'));
+	        visitTendencyChart = echarts.init(document.getElementById('visitTendency'));
 	        var option = {
 	            title: {
-			        text: '访客趋势图'
+			        //text: '访客趋势图'
 			    },
 			    tooltip: {
-			        trigger: 'axis'
+			        trigger: 'axis',
 			    },
 			    legend: {
 			    },
@@ -162,7 +168,7 @@
 			    },
 			    toolbox: {
 			        feature: {
-			            saveAsImage: {}
+			            //saveAsImage: {}
 			        }
 			    },
 			    xAxis: {
@@ -175,17 +181,17 @@
 			    series: [
 			    ]
 	      };
-	        visitChart.setOption(option);
+	        visitTendencyChart.setOption(option);
     		}
     		
-    		function ajax_visit(){
-    			var param_visits = "module=API&method=VisitsSummary.getVisits&idSite="+idSite+"&period=day&date=last7&format=json&token_auth="+t+"&translateColumnNames=1";
-    			var param_uniqueVisitors = "module=API&method=VisitsSummary.getUniqueVisitors&idSite="+idSite+"&period=day&date=last7&format=json&token_auth="+t;
+    		function ajax_visit(date){
+    			var param_visits = "module=API&method=VisitsSummary.getVisits&idSite="+idSite+"&period=day&date="+date+"&format=json&token_auth="+t+"&translateColumnNames=1";
+    			var param_uniqueVisitors = "module=API&method=VisitsSummary.getUniqueVisitors&idSite="+idSite+"&period=day&date="+date+"&format=json&token_auth="+t;
     			var urls = new Array();
     			urls.push(encodeURI(param_visits));
     			urls.push(encodeURI(param_uniqueVisitors));
     			var param = {module:"API",method:"API.getBulkRequest",format:"json",urls:urls};
-    			visitChart.showLoading();
+    			visitTendencyChart.showLoading();
     			ajax_jsonp(piwik_url, param, function(data){
     				data = eval(data);
 				var categories = new Array();
@@ -212,17 +218,19 @@
 			    		series:[{
 			    			name:'访问',
 			            type:'line',
-			            //stack: '总量',
+			            stack: '访问',
+			            areaStyle: {normal: {}},
 			            data:datas
 			    		},{
 			    			name:'唯一访客',
 			            type:'line',
-			            //stack: '总量',
+			            stack: '唯一访客',
+			            areaStyle: {normal: {}},
 			            data:datas1
 			    		}]
 				};
-				visitChart.hideLoading();
-				visitChart.setOption(option);
+				visitTendencyChart.hideLoading();
+				visitTendencyChart.setOption(option);
     			});
     		}
     </script>
