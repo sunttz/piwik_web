@@ -1,2 +1,2 @@
 # piwik_web
-pewit_web
+piwik_web
