@@ -60,6 +60,7 @@
 						<button type="button" class="btn btn-default" data="previous1" onclick="changeDate('previous1')">昨天</button>
 						<button type="button" class="btn btn-default active" data="last7" onclick="changeDate('last7')">最近7天</button>
 						<button type="button" class="btn btn-default" data="last30" onclick="changeDate('last30')">最近30天</button>
+						<input id="date" type="hidden" value="last7" />
 					</div>
 				</div>
 			</div>
@@ -68,7 +69,32 @@
 				<div class="first-row">
 					<div style="float: left;width: 49%;">
 						<div class="table-grid-item">
-							<div id="visitTendency" style="width: '49%';height:392px;"></div>
+							<div class="title" style="height: 55px;">
+								<div style="float: left;font-weight: bold;font-size: 14px;padding: 5px 0 0 10px;">访客趋势图</div>
+								<div style="float: right;padding: 5px 10px 0 0;">
+									<a href="http://www.baidu.com"><span class="glyphicon glyphicon-chevron-right"></span></a>
+								</div>
+								<div style="clear: both;"></div>
+								<div id="btn_group" class="btn-group" style="padding: 5px 0 0 10px;">
+									<button id="btn_pv" type="button" class="btn btn-default btn-xs active" onclick="visitTendency_btn1('pv');">浏览量(PV)</button>
+									<button id="btn_uv" type="button" class="btn btn-default btn-xs" onclick="visitTendency_btn1('uv');">访客数(UV)</button>
+									<div class="btn-group">
+										<button id="btn_other" type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+											<span id="visitTendency_btn_text">其他</span>
+											<span class="caret"></span>
+										</button>
+										<ul class="dropdown-menu">
+											<li><a id="btn_visit" href="javascript:visitTendency_btn2('visit');">访问</a></li>
+											<li><a id="btn_user" href="javascript:visitTendency_btn2('user');">用户数</a></li>
+											<li><a id="btn_br" href="javascript:visitTendency_btn2('br');">跳出率</a></li>
+											<li><a id="btn_at" href="javascript:visitTendency_btn2('at');">平均访问时长(秒)</a></li>
+										</ul>
+								  </div>
+								  <input type="hidden" id="visitTendencyIndex" value="pv"/>
+								</div>
+							</div>
+							
+							<div id="visitTendency" style="width: '49%';height:350px;"></div>
 						</div>
 					</div>
 					<div style="float: right;width: 49%;">
@@ -113,7 +139,7 @@
     			// 加载访客趋势图
     			var visitTendencyChart = null;
     			init_visit();
-    			ajax_visit("last7");
+    			ajax_visit();
     		});
     		
     		// 今日流量
@@ -145,46 +171,187 @@
 		function changeDate(date){
 			$("#dateDiv .btn").removeClass("active");
 			$("#dateDiv .btn[data="+date+"]").addClass("active");
-			ajax_visit(date);
+			$("#date").val(date);
+			ajax_visit();
 		}
-		
+		// 访客趋势图start
     		// 初始化访客趋势图
     		function init_visit(){
 	        visitTendencyChart = echarts.init(document.getElementById('visitTendency'));
 	        var option = {
-	            title: {
-			        //text: '访客趋势图'
-			    },
-			    tooltip: {
-			        trigger: 'axis',
-			    },
-			    legend: {
-			    },
-			    grid: {
-//			        left: '3%',
-//			        right: '3%',
-//			        bottom: '3%',
-//			        containLabel: true
-			    },
-			    toolbox: {
-			        feature: {
-			            //saveAsImage: {}
-			        }
-			    },
-			    xAxis: {
-			        type: 'category',
-			        boundaryGap: false,
-			    },
-			    yAxis: {
-			        type: 'value'
-			    },
-			    series: [
-			    ]
-	      };
+	            title: {},
+			    tooltip: {trigger: 'axis',},
+			    legend: {bottom : '6%'},
+			    grid: {left: '8%',right: '8%',top: '8%',containLabel: true},
+			    toolbox: {feature: {}},
+			    xAxis: {type: 'category',boundaryGap: false},
+			    yAxis: {type: 'value'},
+			    series: []
+	      	};
 	        visitTendencyChart.setOption(option);
     		}
-    		
-    		function ajax_visit(date){
+    		//加载访客趋势图
+    		function ajax_visit(){
+    			var date = $("#date").val(); // 日期
+    			var visitTendencyIndex = $("#visitTendencyIndex").val(); // 指标
+    			var param = {};
+    			var option = {};
+    			visitTendencyChart.showLoading();
+    			// 浏览量(PV)
+    			if("pv"==visitTendencyIndex){
+    				param = {module:"API",method:"MultiSites.getOne",idSite:idSite,period:"day",date:date,format:"json",token_auth:t};
+    				ajax_jsonp(piwik_url, param, function(data){
+    					data = eval(data);
+    					var categories = new Array();
+					var datas = new Array();
+					for(var k in data){
+						categories.push(k);
+						datas.push(data[k].nb_pageviews);
+					}
+					option = {
+						legend: {data:["浏览量(PV)"]},
+						tooltip:{formatter:function(params){return params[0].name + ' <br/>' + params[0].seriesName + ": " + params[0].value;}},
+				    		xAxis: {data:categories},
+				    		yAxis: {axisLabel:{formatter: '{value}'}},
+				    		series:[{name:'浏览量(PV)',type:'line',stack: '浏览量(PV)',itemStyle:{normal:{color: '#87CEEB',lineStyle:{color:'#87CEEB'}}},
+				            areaStyle: {normal: {color:'#87CEEB'}},data:datas
+				    		}]
+					};
+					visitTendencyChart.hideLoading();
+					visitTendencyChart.setOption(option);
+    				});
+    			}
+    			// 访客数(UV)
+    			else if("uv"==visitTendencyIndex){
+    				param = {module:"API",method:"VisitsSummary.get",idSite:idSite,period:"day",date:date,format:"json",token_auth:t,columns:"nb_uniq_visitors"};
+    				ajax_jsonp(piwik_url, param, function(data){
+    					data = eval(data);
+    					var categories = new Array();
+					var datas = new Array();
+					for(var k in data){
+						categories.push(k);
+						datas.push(data[k]);
+					}
+					option = {
+						legend: {data:["访客数(UV)"]},
+						tooltip:{formatter:function(params){return params[0].name + ' <br/>' + params[0].seriesName + ": " + params[0].value;}},
+				    		xAxis: {data:categories},
+				    		yAxis: {axisLabel:{formatter: '{value}'}},
+				    		series:[{name:'访客数(UV)',type:'line',stack: '访客数(UV)',itemStyle:{normal:{color: '#87CEEB',lineStyle:{color:'#87CEEB'}}},
+				            areaStyle: {normal: {color:'#87CEEB'}},data:datas
+				    		}]
+					};
+					visitTendencyChart.hideLoading();
+					visitTendencyChart.setOption(option);
+    				});
+    			}
+    			// 访问
+    			else if("visit" == visitTendencyIndex){
+    				param = {module:"API",method:"VisitsSummary.get",idSite:idSite,period:"day",date:date,format:"json",token_auth:t,columns:"nb_visits"};
+    				ajax_jsonp(piwik_url, param, function(data){
+    					data = eval(data);
+    					var categories = new Array();
+					var datas = new Array();
+					for(var k in data){
+						categories.push(k);
+						datas.push(data[k]);
+					}
+					option = {
+						legend: {data:["访问"]},
+						tooltip:{formatter:function(params){return params[0].name + ' <br/>' + params[0].seriesName + ": " + params[0].value;}},
+				    		xAxis: {data:categories},
+				    		yAxis: {axisLabel:{formatter: '{value}'}},
+				    		series:[{name:'访问',type:'line',stack: '访问',itemStyle:{normal:{color: '#87CEEB',lineStyle:{color:'#87CEEB'}}},
+				            areaStyle: {normal: {color:'#87CEEB'}},data:datas
+				    		}]
+					};
+					visitTendencyChart.hideLoading();
+					visitTendencyChart.setOption(option);
+    				});
+    			}
+    			// 用户数
+    			else if("user" == visitTendencyIndex){
+    				param = {module:"API",method:"VisitsSummary.get",idSite:idSite,period:"day",date:date,format:"json",token_auth:t,columns:"nb_users"};
+    				ajax_jsonp(piwik_url, param, function(data){
+    					data = eval(data);
+    					var categories = new Array();
+					var datas = new Array();
+					for(var k in data){
+						categories.push(k);
+						datas.push(data[k]);
+					}
+					option = {
+						legend: {data:["用户数"]},
+						tooltip:{formatter:function(params){return params[0].name + ' <br/>' + params[0].seriesName + ": " + params[0].value;}},
+				    		xAxis: {data:categories},
+				    		yAxis: {axisLabel:{formatter: '{value}'}},
+				    		series:[{name:'用户数',type:'line',stack: '用户数',itemStyle:{normal:{color: '#87CEEB',lineStyle:{color:'#87CEEB'}}},
+				            areaStyle: {normal: {color:'#87CEEB'}},data:datas
+				    		}]
+					};
+					visitTendencyChart.hideLoading();
+					visitTendencyChart.setOption(option);
+    				});
+    			}
+    			// 跳出率
+    			else if("br" == visitTendencyIndex){
+    				param = {module:"API",method:"VisitsSummary.get",idSite:idSite,period:"day",date:date,format:"json",token_auth:t,columns:"bounce_rate"};
+    				ajax_jsonp(piwik_url, param, function(data){
+    					data = eval(data);
+    					var categories = new Array();
+					var datas = new Array();
+					for(var k in data){
+						categories.push(k);
+						var br = data[k];
+						if(br instanceof Array){
+							br = "0";
+						}else{
+							br = br.substr(0,br.length-1);
+						}
+						datas.push(br);
+					}
+					option = {
+						legend: {data:["跳出率"]},
+						tooltip:{formatter:function(params){return params[0].name + ' <br/>' + params[0].seriesName + ": " + params[0].value + '%';}},
+				    		xAxis: {data:categories},
+				    		yAxis: {axisLabel:{formatter: '{value}%'}},
+				    		series:[{name:'跳出率',type:'line',stack: '跳出率',itemStyle:{normal:{color: '#87CEEB',lineStyle:{color:'#87CEEB'}}},
+				            areaStyle: {normal: {color:'#87CEEB'}},data:datas
+				    		}]
+					};
+					visitTendencyChart.hideLoading();
+					visitTendencyChart.setOption(option);
+    				});
+    			}
+    			// 平均访问时长(秒)
+    			else if("at" == visitTendencyIndex){
+    				param = {module:"API",method:"VisitsSummary.get",idSite:idSite,period:"day",date:date,format:"json",token_auth:t,columns:"avg_time_on_site"};
+    				ajax_jsonp(piwik_url, param, function(data){
+    					data = eval(data);
+    					var categories = new Array();
+					var datas = new Array();
+					for(var k in data){
+						categories.push(k);
+						var at = data[k];
+						if(at instanceof Array){
+							at = 0;
+						}
+						datas.push(at);
+					}
+					option = {
+						legend: {data:["平均访问时长(秒)"]},
+						tooltip:{formatter:function(params){return params[0].name + ' <br/>' + params[0].seriesName + ": " + params[0].value;}},
+				    		xAxis: {data:categories},
+				    		yAxis: {axisLabel:{formatter: '{value}'}},
+				    		series:[{name:'平均访问时长(秒)',type:'line',stack: '平均访问时长(秒)',itemStyle:{normal:{color: '#87CEEB',lineStyle:{color:'#87CEEB'}}},
+				            areaStyle: {normal: {color:'#87CEEB'}},data:datas
+				    		}]
+					};
+					visitTendencyChart.hideLoading();
+					visitTendencyChart.setOption(option);
+    				});
+    			}
+    			/**
     			var param_visits = "module=API&method=VisitsSummary.getVisits&idSite="+idSite+"&period=day&date="+date+"&format=json&token_auth="+t+"&translateColumnNames=1";
     			var param_uniqueVisitors = "module=API&method=VisitsSummary.getUniqueVisitors&idSite="+idSite+"&period=day&date="+date+"&format=json&token_auth="+t;
     			var urls = new Array();
@@ -232,6 +399,27 @@
 				visitTendencyChart.hideLoading();
 				visitTendencyChart.setOption(option);
     			});
+    			*/
     		}
+    		
+    		// 浏览量、访客数按钮点击事件
+		function visitTendency_btn1(index){
+			$("#visitTendency_btn_text").text("其他");
+			$("#visitTendencyIndex").val(index);
+			$("#btn_group button").removeClass("active");
+			$("#btn_"+index).addClass("active");
+			// 刷新访客趋势图
+			ajax_visit();
+		}
+		// 访客趋势图其他按钮点击事件
+		function visitTendency_btn2(index){
+			$("#visitTendency_btn_text").text($("#btn_"+index).text());
+			$("#visitTendencyIndex").val(index);
+			$("#btn_group button").removeClass("active");
+			$("#btn_other").addClass("active");
+			// 刷新访客趋势图
+			ajax_visit();
+		}
+		// 访客趋势图end
     </script>
 </html>
