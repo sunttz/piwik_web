@@ -18,11 +18,15 @@ $(document).ready(function(){
 	top10Visit();
 	// 加载Top10入口页面
 	top10Entry();
-	
+	// 加载地域分布
+	var map_distribution_chart = null;
+	init_mapDistribution();
+	ajax_mapDistribution();
 });
 // 图表自适应
 window.onresize = function(){
 	visitTendencyChart.resize();
+	map_distribution_chart.resize();
 }
 
 // 今日流量
@@ -61,6 +65,8 @@ function changeDate(date){
 	top10Visit();
 	// 加载Top10入口页面
 	top10Entry();
+	// 加载地域分布
+	ajax_mapDistribution();
 }
 // 访客趋势图start
 // 初始化访客趋势图
@@ -278,9 +284,9 @@ function top10Visit(){
 		for(var k in pages){
 			var page = pages[k];
 			var label = page.label;
-			// label最长52字符
-			if(getStrLength(label) > 52){
-				label = cutStr(label,52);
+			// label最长42字符
+			if(getStrLength(label) > 42){
+				label = cutStr(label,42);
 			}
 			var url = page.url;
 			var pv = page.nb_hits;
@@ -317,9 +323,9 @@ function top10Entry(){
 		for(var j in entrys){
 			var entry = entrys[j];
 			var label = entry.label;
-			// label最长52字符
-			if(getStrLength(label) > 52){
-				label = cutStr(label,52);
+			// label最长42字符
+			if(getStrLength(label) > 42){
+				label = cutStr(label, 42);
 			}
 			var url = entry.url;
 			var pv = entry.entry_nb_visits;
@@ -334,3 +340,104 @@ function top10Entry(){
 	});
 }
 // Top10入口页面end
+
+// 地图分布start
+function init_mapDistribution(){
+	map_distribution_chart = echarts.init(document.getElementById('map_distribution'));
+    map_distribution_chart.setOption({
+    		tooltip: {
+            trigger: 'item',
+            formatter: function(param){
+            		var val = param.value;
+            		if(isNaN(val)){
+            			val = 0;
+            		}
+            		return param.name + '<br/>'+ val +' 访问量';
+            }
+       	},
+    		visualMap: {
+            min: 0,
+	        max: 100,
+	        left: 'left',
+	        top: 'bottom',
+	        text: ['高','低'],
+	        inRange: {
+	            color: ['#e0ffff', '#006edd']
+	        },
+	        calculable : true
+        },
+        series: [{
+        		name:"访问量",
+            type: 'map',
+            map: 'anhui',
+            data:[
+//          		{name:'合肥市',value:'0'},
+//          		{name:'亳州市',value:'0'},
+//          		{name:'淮北市',value:'0'},
+//          		{name:'宿州市',value:'0'},
+//          		{name:'阜阳市',value:'0'},
+//          		{name:'蚌埠市',value:'0'},
+//          		{name:'淮南市',value:'0'},
+//          		{name:'滁州市',value:'0'},
+//          		{name:'六安市',value:'0'},
+//          		{name:'芜湖市',value:'0'},
+//          		{name:'马鞍山市',value:'0'},
+//          		{name:'安庆市',value:'0'},
+//          		{name:'池州市',value:'0'},
+//          		{name:'铜陵市',value:'0'},
+//          		{name:'宣城市',value:'0'},
+//          		{name:'黄山市',value:'0'}
+            ]
+        }]
+    });
+}
+
+var anhui = {'anqing':'安庆市','bengbu':'蚌埠市','chuzhou':'滁州市','chizhou':'池州市','bozhou':'亳州市','hefei':'合肥市','huaibei':'淮北市','huainan':'淮南市','huangshan':'黄山市','luan':'六安市','maanshan':'马鞍山市','suzhou':'宿州市','tongling':'铜陵市','wuhu':'芜湖市','xuancheng':'宣城市'};
+function ajax_mapDistribution(){
+	var date = $("#date").val(); // 日期
+	var param = {module:"API",method:"UserCountry.getCity",idSite:idSite,period:"range",date:date,format:"json",token_auth:t};
+	var maxVisits = 0;
+	var cities = new Array();
+	var option = {};
+	map_distribution_chart.showLoading();
+	ajax_jsonp(piwik_url,param,function(data){
+		data = eval(data);
+		for(var key in data){
+			var city = data[key];
+			// 安徽
+			if(city.region == '01'){
+				var city_name = city.city_name.toLowerCase();
+				var city_name_cn = anhui[city_name];
+				if(city_name_cn != null && city_name_cn != ""){
+					var nb_visits = city.nb_visits;
+					if(nb_visits > maxVisits){
+						maxVisits = nb_visits;
+					}
+					cities.push({name:city_name_cn,value:nb_visits});
+				}
+			}
+		}
+		if(maxVisits != 0){
+			option = {
+				visualMap : {
+					max : maxVisits
+				},
+				series : [{
+					data : cities
+				}]
+			};
+		}else{
+			option = {
+				visualMap : {
+					max : 100
+				},
+				series : [{
+					data : []
+				}]
+			};
+		}
+		map_distribution_chart.setOption(option);
+		map_distribution_chart.hideLoading();
+	});
+}
+// 地图分布end
