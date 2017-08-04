@@ -1,8 +1,3 @@
-//访问趋势图
-//http://192.168.169.129/piwik/index.php?module=API&method=VisitsSummary.getVisits&idSite=1&period=day&date=last7&format=json&token_auth=e71ba827b18991f694bc0929508c3dfb&translateColumnNames=1
-function changeMenu(){
-	parent.changeMenu("menu-child-33");
-}
 
 $(document).ready(function(){
 	idSite = getQueryString("siteId");
@@ -268,7 +263,7 @@ function visitTendency_btn2(index){
 // 跳转趋势分析详情
 function jumpTrend(){
 	parent.changeMenu("menu-child-13");
-	window.location.href = "m1/trend.html?idSite="+idSite+"&t="+t;
+	window.location.href = "m1/trend.html?siteId="+idSite+"&t="+t;
 }
 // 访客趋势图end
 
