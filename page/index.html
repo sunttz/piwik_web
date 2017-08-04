@@ -184,6 +184,7 @@
 		}
 		// 切换菜单
 		function changeMenu(childMenu){
+			$("ul.side-menu li").removeClass("active");
     			$("#"+childMenu).parent('li').addClass("active");
     		}
 		

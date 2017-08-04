@@ -265,6 +265,11 @@ function visitTendency_btn2(index){
 	// 刷新访客趋势图
 	ajax_visit();
 }
+// 跳转趋势分析详情
+function jumpTrend(){
+	parent.changeMenu("menu-child-13");
+	window.location.href = "m1/trend.html?idSite="+idSite+"&t="+t;
+}
 // 访客趋势图end
 
 // Top10受访页面start
@@ -299,6 +304,11 @@ function top10Visit(){
 		}
 		$("#top10_visit_tbody").html(tbodyHtml);
 	});
+}
+// 跳转受访页面
+function jumpVisitPage(){
+	parent.changeMenu("menu-child-33");
+	window.location.href = "m3/visitPage.html?idSite="+idSite+"&t="+t;
 }
 // Top10受访页面end
    
@@ -338,6 +348,11 @@ function top10Entry(){
 		}
 		$("#top10_entry_tbody").html(tbodyHtml);
 	});
+}
+// 跳转入口页面
+function jumpEntryPage(){
+	parent.changeMenu("menu-child-33");
+	window.location.href = "m3/entryPage.html?idSite="+idSite+"&t="+t;
 }
 // Top10入口页面end
 
@@ -439,5 +454,11 @@ function ajax_mapDistribution(){
 		map_distribution_chart.setOption(option);
 		map_distribution_chart.hideLoading();
 	});
+}
+
+// 跳转地域分布详情
+function jumpDistrict(){
+	parent.changeMenu("menu-child-43");
+	window.location.href = "m4/district.html?idSite="+idSite+"&t="+t;
 }
 // 地图分布end
