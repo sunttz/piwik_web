@@ -4,5 +4,7 @@ document.write('<script type="text/javascript" src="../../common/js/util.js"></s
 document.write('<script type="text/javascript" src="../../common/lib/echarts.min.js"></script>');
 document.write('<script type="text/javascript" src="../../common/lib/bootstrap/js/bootstrap.min.js"></script>');
 document.write('<script type="text/javascript" src="../../common/lib/My97DatePicker/WdatePicker.js"></script>');
+document.write('<script type="text/javascript" src="../../common/js/page/dataTable.js"></script>');
 
 document.write('<link rel="stylesheet" href="../../common/lib/bootstrap/css/bootstrap.min.css">');
+document.write('<link rel="stylesheet" href="../../common/css/dataTable.css">');
