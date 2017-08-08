@@ -42,8 +42,8 @@ function getTodayFlow(){
 		var vs_t = data[1];
 		var ms_y = data[2];
 		var vs_y = data[3];
-		var todayTr = "<td>今日</td><td>"+ms_t["nb_pageviews"]+"</td><td>"+vs_t["nb_uniq_visitors"]+"</td><td>"+vs_t["nb_visits"]+"</td><td>"+vs_t["nb_users"]+"</td><td>"+vs_t["bounce_rate"]+"</td><td>"+vs_t["avg_time_on_site"]+"</td>";
-		var yesterdayTr = "<td>昨日</td><td>"+ms_y["nb_pageviews"]+"</td><td>"+vs_y["nb_uniq_visitors"]+"</td><td>"+vs_y["nb_visits"]+"</td><td>"+vs_y["nb_users"]+"</td><td>"+vs_y["bounce_rate"]+"</td><td>"+vs_y["avg_time_on_site"]+"</td>";
+		var todayTr = "<td>今日</td><td>"+ms_t["nb_pageviews"]+"</td><td>"+vs_t["nb_uniq_visitors"]+"</td><td>"+vs_t["nb_visits"]+"</td><td>"+vs_t["nb_users"]+"</td><td>"+vs_t["bounce_rate"]+"</td><td>"+formatTime(vs_t["avg_time_on_site"])+"</td>";
+		var yesterdayTr = "<td>昨日</td><td>"+ms_y["nb_pageviews"]+"</td><td>"+vs_y["nb_uniq_visitors"]+"</td><td>"+vs_y["nb_visits"]+"</td><td>"+vs_y["nb_users"]+"</td><td>"+vs_y["bounce_rate"]+"</td><td>"+formatTime(vs_y["avg_time_on_site"])+"</td>";
 		$("#today-flow-table tr.today").html(todayTr);
 		$("#today-flow-table tr.yesterday").html(yesterdayTr);
 	});

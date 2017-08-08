@@ -111,4 +111,19 @@ function getDateStr(addDayCount){
 	var m = (dd.getMonth()+1)<10?"0"+(dd.getMonth()+1):(dd.getMonth()+1);//获取当前月份的日期，不足10补0
 	var d = dd.getDate()<10?"0"+dd.getDate():dd.getDate(); //获取当前几号，不足10补0
 	return y+"-"+m+"-"+d; 
-}	
+}
+
+// 格式化秒值格式
+function formatTime(seconds) {
+	if(seconds == null || seconds == "" || seconds == 0){
+		return "00:00:00";
+	}else{
+		return [
+		        parseInt(seconds / 60 / 60),
+		        parseInt(seconds / 60 % 60),
+		        parseInt(seconds % 60)
+		    ]
+		        .join(":")
+		        .replace(/\b(\d)\b/g, "0$1");
+	}
+}
