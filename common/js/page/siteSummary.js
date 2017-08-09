@@ -303,7 +303,7 @@ function top10Visit(){
 // 跳转受访页面
 function jumpVisitPage(){
 	parent.changeMenu("menu-child-33");
-	window.location.href = "m3/visitPage.html?idSite="+idSite+"&t="+t;
+	window.location.href = "m3/visitPage.html?siteId="+idSite+"&t="+t;
 }
 // Top10受访页面end
    
@@ -333,7 +333,7 @@ function top10Entry(){
 				label = cutStr(label, 42);
 			}
 			var url = entry.url;
-			var pv = entry.entry_nb_visits;
+			var pv = entry.entry_nb_visits; // 贡献浏览量
 			var prop = Math.round(pv / totalPv * 10000) / 100.00 + "%";
 			tbodyHtml += "<tr>";
 			tbodyHtml += "<td title='"+url+"'><a target='_blank' href='"+url+"'>"+label+"</a></td>";
@@ -347,7 +347,7 @@ function top10Entry(){
 // 跳转入口页面
 function jumpEntryPage(){
 	parent.changeMenu("menu-child-33");
-	window.location.href = "m3/entryPage.html?idSite="+idSite+"&t="+t;
+	window.location.href = "m3/entryPage.html?siteId="+idSite+"&t="+t;
 }
 // Top10入口页面end
 
@@ -454,6 +454,6 @@ function ajax_mapDistribution(){
 // 跳转地域分布详情
 function jumpDistrict(){
 	parent.changeMenu("menu-child-43");
-	window.location.href = "m4/district.html?idSite="+idSite+"&t="+t;
+	window.location.href = "m4/district.html?siteId="+idSite+"&t="+t;
 }
 // 地图分布end
