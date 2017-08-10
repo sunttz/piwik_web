@@ -5,6 +5,9 @@ $(function(){
 	$("#date").html(getDateStr(-6)+" ~ "+getDateStr(0));
     	$("#startDate").val(getDateStr(-6));
 	$("#endDate").val(getDateStr(0));
+	// 饼图和折线图原始数据，调整时间则更新该值
+	var pieData = [];
+	var lineData = {};
 	//时间切换
 	$("#dateDiv button").click(function() {
 		var str = $(this).attr("data");
@@ -41,16 +44,17 @@ $(function(){
 				default:
 					null;
 			};
-			
+			ajaxPieLine(); // 更新数据
 		} 
     });
-    // 加载饼图数据
+    // 初始化饼图
     var entryPie = null;
 	initPie();
-	ajaxPie();
-	// 加载折线图数据
+	// 初始化折线图
 	var entryLine = null;
 	initLine();
+	// 更新数据
+	ajaxPieLine();
 	// 加载详情表格数据
 	initCsTable();
 	
@@ -67,94 +71,45 @@ window.onresize = function(){
 	entryLine.resize();
 }
 
-// 饼图start
-var pieData = null;
+// 饼图折线图start
+/**
+ * 1.切换时间时更新pieData和lineData即折线图饼图的原始数据
+ * 2.调用ajaxPieLine方法更新数据
+ * 3.调用refreshPieLine方法更新图表
+ */
 // 初始化饼图
 function initPie(){
 	entryPie = echarts.init(document.getElementById('entryPie'));
 	option = {
-	    tooltip: {
-	        trigger: 'item',
-	        formatter: "{a} <br/>{b}: {c} ({d}%)"
+	    tooltip: {trigger: 'item', formatter: "{a} <br/>{b}: {c} ({d}%)"},
+	    grid: {
+	        top: '3%',
 	    },
-	    series: [
-	        {
-	            //name:'贡献浏览量',
-	            type:'pie',
-	            radius: ['50%', '70%'],
-	            data:[
-//	                {value:335, name:'直接访问'},
-//	                {value:310, name:'邮件营销'},
-//	                {value:234, name:'联盟广告'},
-//	                {value:135, name:'视频广告'},
-//	                {value:1548, name:'搜索引擎'}
-	            ] 
-	        }
-	    ]
+	    series: [{type:'pie',radius: ['50%', '70%'],label: {normal: {show: true,formatter: '{d}%'}},data:[]}]
 	};
 	entryPie.setOption(option);
 }
 
-function ajaxPie(){
-	var startDate = $("#startDate").val();
-	var endDate = $("#endDate").val();
-	var param = {module:'API',method:'Actions.getEntryPageUrls',idSite:idSite,period:'range',date:startDate+","+endDate,format:'json',token_auth:t,filter_limit:'10',filter_sort_column:'entry_nb_visits',filter_sort_order:'desc'};
-	ajax_jsonp(piwik_url,param,function(data){
-		data = eval(data);
-		pieData = data;
-		entry_btn('cv');
-	});
-}
-
-// 指标按钮点击事件
-function entry_btn(index){
-	$("#entry_btn_text").text("指标："+$("#btn_"+index).text());
-	$("#entryIndex").val(index);
-	var name = "";
-	var cvData = [];
-	if("cv"==index){
-		name = "贡献浏览量";
-		for(var k in pieData){
-			var row = pieData[k];
-			cvData.push({value:row.entry_nb_visits,name:row.label});
-		}
-	}
-	option = {
-		tooltip: {
-	        formatter: function(params){return cutStr(params.name,42) + ' <br/>' + name + "：" +params.value + "<br/>占比：" + params.percent + "%";}
-	    },
-		series : [{
-			name : name,
-			data : cvData
-		}]
-	}
-	entryPie.setOption(option);
-}
-// 饼图end
-
-// 折线图start
+// 初始化折线图
 function initLine(){
 	entryLine = echarts.init(document.getElementById('entryLine'));
 	option = {
-	    title: {
-	        text: '折线图堆叠'
-	    },
 	    tooltip: {
 	        trigger: 'axis'
 	    },
 	    legend: {
-	        data:['邮件营销','联盟广告','视频广告','直接访问','搜索引擎']
+	        data:['http://editor.baidu...','http://editor.baidu1...','http://editor.baidu2...','http://editor.baidu3...','http://editor.baidu4...'],
+	        bottom : '0%',
+	        selected: {  
+                'http://editor.baidu1...': false,  
+                'http://editor.baidu2...': false
+            }  
 	    },
 	    grid: {
 	        left: '3%',
 	        right: '4%',
-	        bottom: '3%',
+	        top: '3%',
 	        containLabel: true
-	    },
-	    toolbox: {
-	        feature: {
-	            saveAsImage: {}
-	        }
 	    },
 	    xAxis: {
 	        type: 'category',
@@ -166,35 +121,156 @@ function initLine(){
 	    },
 	    series: [
 	        {
-	            name:'邮件营销',
+	            name:'http://editor.baidu...',
 	            type:'line',
 	            data:[120, 132, 101, 134, 90, 230, 210]
 	        },
 	        {
-	            name:'联盟广告',
+	            name:'http://editor.baidu1...',
 	            type:'line',
 	            data:[220, 182, 191, 234, 290, 330, 310]
-	        },
-	        {
-	            name:'视频广告',
-	            type:'line',
-	            data:[150, 232, 201, 154, 190, 330, 410]
-	        },
-	        {
-	            name:'直接访问',
-	            type:'line',
-	            data:[320, 332, 301, 334, 390, 330, 320]
-	        },
-	        {
-	            name:'搜索引擎',
-	            type:'line',
-	            data:[820, 932, 901, 934, 1290, 1330, 1320]
 	        }
 	    ]
 	};
 	entryLine.setOption(option);
 }
-// 折线图end
+
+// 更新饼图折线图数据
+function ajaxPieLine(){
+	var startDate = $("#startDate").val();
+	var endDate = $("#endDate").val();
+	var param = {module:'API',method:'Actions.getEntryPageUrls',idSite:idSite,period:'range',date:startDate+","+endDate,format:'json',token_auth:t,filter_limit:'10',filter_sort_column:'entry_nb_visits',filter_sort_order:'desc'};
+	ajax_jsonp(piwik_url,param,function(data){
+		data = eval(data);
+		pieData = data;
+		// 根据top10的url获取各url趋势数据
+		lineData = {};
+		var urls = new Array();
+		// 获取top10的url
+		var top10Urls = [];
+		for(var k in pieData){
+			var url = pieData[k].url;
+			top10Urls.push(url);
+		}
+		// 组装接口参数
+		for(var k in top10Urls){
+			var url = top10Urls[k];
+			if(url != null && url != ""){
+				urls.push(encodeURI("module=API&method=Actions.getPageUrl&pageUrl="+url+"&idSite="+idSite+"&period=day&date="+startDate+","+endDate+"&format=json&token_auth="+t));
+			}
+		}
+		var p = getBulkRequestParam(urls);
+		// 组装折线图数据
+		ajax_jsonp(piwik_url,p,function(data){
+			data = eval(data);
+			for(var i=0;i<top10Urls.length;i++){
+				var url = top10Urls[i];
+				lineData[url] = data[i];
+			}
+			refreshPieLine();
+		});
+	});
+}
+
+// 更新图表
+function refreshPieLine(){
+	var index = $("#entryIndex").val();
+	// 更新饼图
+	var name = "";
+	var pie = []; // 饼图数据
+	if("cv"==index){
+		name = "贡献浏览量";
+		for(var k in pieData){
+			var row = pieData[k];
+			pie.push({value:row.entry_nb_visits,name:row.url});
+		}
+	}else if("pv"==index){
+		name = "访问次数";
+		for(var k in pieData){
+			var row = pieData[k];
+			pie.push({value:row.nb_hits,name:row.url});
+		}
+	}else if("uv"==index){
+		name = "唯一页面访问量";
+		for(var k in pieData){
+			var row = pieData[k];
+			pie.push({value:row.nb_visits,name:row.url});
+		}
+	}
+	var pieOption = {
+		tooltip: {
+	        formatter: function(params){return cutStr(params.name,42) + ' <br/>' + name + "：" +params.value + "<br/>占比：" + params.percent + "%";}
+	    },
+		series : [{
+			name : name,
+			data : pie
+		}]
+	}
+	entryPie.setOption(pieOption);
+	// 更新折线图
+	var legendData = [];
+	var xAxisData = [];
+	var series = [];
+	var legendSelected = {};
+	for(var url in lineData){
+		legendData.push(url);
+		var urlTrend = lineData[url];
+		var seriesData = [];
+		for(var date in urlTrend){
+			var dayData = urlTrend[date];
+			if(dayData.length == 0){
+				seriesData.push(0);
+			}else{
+				if("cv" == index){
+					var env = dayData[0].entry_nb_visits; // 贡献浏览量
+					if(env == undefined){ // 没有贡献
+						env = 0;
+					}else{
+						env = parseInt(env);
+					}
+					seriesData.push(env);
+				}else if("pv" == index){
+					seriesData.push(dayData[0].nb_hits);
+				}else if("uv" == index){
+					seriesData.push(dayData[0].nb_visits);
+				}
+			}
+		}
+		if(xAxisData.length == 0){
+			for(var date in urlTrend){
+				xAxisData.push(date);
+			}
+		}
+		series.push({name:url,type:'line',data:seriesData});
+	}
+	// 超过4个的url趋势图隐藏,有bug
+	debugger;
+	if(legendData.length > 4){
+		for(var i=4;i<legendData.length-4;i++){
+			legendSelected[legendData[i]] = false;
+		}
+	}
+	var lineOption = {
+		legend: {
+	        data:legendData,
+	        selected: legendSelected 
+	    },
+	    xAxis: {
+	        data: xAxisData
+	    },
+	    series: series
+	};
+	entryLine.setOption(lineOption);
+}
+
+// 指标按钮选择
+function btnSelect(index){
+	$("#entry_btn_text").text("指标："+$("#btn_"+index).text());
+	$("#entryIndex").val(index);
+	refreshPieLine();
+}
+
+// 饼图折线图end
 
 // url详情表格start
 // 构造表格数据

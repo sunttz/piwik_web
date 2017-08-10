@@ -37,7 +37,7 @@
 							<div class="form-group" style="display: inline-block;margin: 0 0 0 20px;">
 		                 		<input type="text" class="form-control" name="startDate" id="startDate" style="display: block;float: left;overflow: hidden;width:110px;height: 30px;" onclick="WdatePicker({doubleCalendar:false,dateFmt:'yyyy-MM-dd',autoPickDate:true,minDate:'#{%y-1}-%M-%d',maxDate:'#F{$dp.$D(\'endDate\')||\'%y-%M-%d\'}',onpicked:function(){endDate.click();}});" />
 				                <label class="control-label" style="padding:3px 5px 0 0;float: left;">&nbsp;-</label>
-				                <input type="text" class="form-control" name="endDate" id="endDate" style="display: block;float: left;overflow: hidden;width:110px;height: 30px;" onclick="WdatePicker({doubleCalendar:false,minDate:'#F{$dp.$D(\'startDate\')}',maxDate:'%y-%M-%d',dateFmt:'yyyy-MM-dd',autoPickDate:true,onpicked:dateSelect});" />
+				                <input type="text" class="form-control" name="endDate" id="endDate" style="display: block;float: left;overflow: hidden;width:110px;height: 30px;" onclick="WdatePicker({doubleCalendar:false,minDate:'#F{$dp.$D(\'startDate\')}',maxDate:'%y-%M-%d',dateFmt:'yyyy-MM-dd',autoPickDate:true,onpicked:ajaxPieLine});" />
 			                 </div>
 						</div>
 					</div>
@@ -51,22 +51,22 @@
 							<span class="caret"></span>
 						</button>
 						<ul class="dropdown-menu">
-							<li><a id="btn_pv" href="javascript:entry_btn('pv');">访问次数</a></li>
-							<li><a id="btn_uv" href="javascript:entry_btn('uv');">唯一页面访问量</a></li>
-							<li><a id="btn_cv" href="javascript:entry_btn('cv');">贡献浏览量</a></li>
+							<li><a id="btn_pv" href="javascript:btnSelect('pv');">访问次数</a></li>
+							<li><a id="btn_uv" href="javascript:btnSelect('uv');">唯一页面访问量</a></li>
+							<li><a id="btn_cv" href="javascript:btnSelect('cv');">贡献浏览量</a></li>
 						</ul>
 				  </div>
-				  <input type="hidden" id="entryIndex" value="pv"/>
+				  <input type="hidden" id="entryIndex" value="cv"/>
 				</div>
 				<div class="first-row">
 					<div style="float: left;width: 35%;">
 						<div class="table-grid-item">
-							<div id="entryPie" style="height:350px;"></div>
+							<div id="entryPie" style="height:365px;"></div>
 						</div>
 					</div>
 					<div style="float: right;width: 65%;">
 						<div class="table-grid-item">
-							<div id="entryLine" style="height:350px;"></div>
+							<div id="entryLine" style="height:365px;margin-top: 20px;"></div>
 						</div>
 					</div>
 				</div>
