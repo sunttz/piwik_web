@@ -184,8 +184,10 @@
 		}
 		// 切换菜单
 		function changeMenu(childMenu){
-			$("ul.side-menu li").removeClass("active");
-    			$("#"+childMenu).parent('li').addClass("active");
+			// $("ul.side-menu li").removeClass("active");
+			// 菜单树还原到默认
+			$(".side-menu .menu-item").removeClass("active").find("ul.menu-item-child").removeClass("menu-open").css("display","none");
+    			$("#"+childMenu).addClass("menu-open").css("display","block").parent('li').addClass("active");
     		}
 		
 		// 切换网站
@@ -206,7 +208,7 @@
 				}
 			});
 			// 菜单树还原到默认
-			$(".side-menu .menu-item.active").removeClass("active").find("ul.menu-open").removeClass("menu-open").css("display","none");
+			$(".side-menu .menu-item").removeClass("active").find("ul.menu-item-child").removeClass("menu-open").css("display","none");
 		}
     </script>
   </body>
