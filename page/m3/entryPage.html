@@ -12,7 +12,7 @@
 	    		.main {border-left: none;border-right: none;background-color: #ececec;height:'100%';padding-bottom: 5px;}
 	    		.content-header-wrapper {width: auto;left: 0px;background-color: #fff;height: 100px;border:1px solid #E8E8E8}
 	    		.main-content {height: '100%';margin: 15px;background-color: #fff;}
-	    		.table-grid-item {margin-top: 1px; background-color: #fff; height: 442px;}
+	    		.table-grid-item {margin-top: 1px; background-color: #fff; height: 420px;}
 	    </style>
 	</head>
 	<body>
@@ -37,7 +37,7 @@
 							<div class="form-group" style="display: inline-block;margin: 0 0 0 20px;">
 		                 		<input type="text" class="form-control" name="startDate" id="startDate" style="display: block;float: left;overflow: hidden;width:110px;height: 30px;" onclick="WdatePicker({doubleCalendar:false,dateFmt:'yyyy-MM-dd',autoPickDate:true,minDate:'#{%y-1}-%M-%d',maxDate:'#F{$dp.$D(\'endDate\')||\'%y-%M-%d\'}',onpicked:function(){endDate.click();}});" />
 				                <label class="control-label" style="padding:3px 5px 0 0;float: left;">&nbsp;-</label>
-				                <input type="text" class="form-control" name="endDate" id="endDate" style="display: block;float: left;overflow: hidden;width:110px;height: 30px;" onclick="WdatePicker({doubleCalendar:false,minDate:'#F{$dp.$D(\'startDate\')}',maxDate:'%y-%M-%d',dateFmt:'yyyy-MM-dd',autoPickDate:true,onpicked:ajaxPieLine});" />
+				                <input type="text" class="form-control" name="endDate" id="endDate" style="display: block;float: left;overflow: hidden;width:110px;height: 30px;" onclick="WdatePicker({doubleCalendar:false,minDate:'#F{$dp.$D(\'startDate\')}',maxDate:'%y-%M-%d',dateFmt:'yyyy-MM-dd',autoPickDate:true,onpicked:dateSelect});" />
 			                 </div>
 						</div>
 					</div>

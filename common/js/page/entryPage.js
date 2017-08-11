@@ -44,7 +44,8 @@ $(function(){
 				default:
 					null;
 			};
-			ajaxPieLine(); // 更新数据
+			ajaxPieLine(); // 更新图表数据
+			ajaxCsTable(); // 更新详情表格
 		} 
     });
     // 初始化饼图
@@ -53,17 +54,18 @@ $(function(){
 	// 初始化折线图
 	var entryLine = null;
 	initLine();
-	// 更新数据
+	// 更新图表数据
 	ajaxPieLine();
 	// 加载详情表格数据
-	initCsTable();
+	ajaxCsTable();
 	
 });
 
 // 结束时间选择事件
 function dateSelect(){
 	$("#date").html($("#startDate").val()+" ~ "+$("#endDate").val());
-	
+	ajaxPieLine(); // 更新图表数据
+	ajaxCsTable(); // 更新详情表格
 }
 // 图表自适应
 window.onresize = function(){
@@ -98,12 +100,9 @@ function initLine(){
 	        trigger: 'axis'
 	    },
 	    legend: {
-	        data:['http://editor.baidu...','http://editor.baidu1...','http://editor.baidu2...','http://editor.baidu3...','http://editor.baidu4...'],
+	        data:[],
 	        bottom : '0%',
-	        selected: {  
-                'http://editor.baidu1...': false,  
-                'http://editor.baidu2...': false
-            }  
+	        selected: {}  
 	    },
 	    grid: {
 	        left: '3%',
@@ -114,23 +113,12 @@ function initLine(){
 	    xAxis: {
 	        type: 'category',
 	        boundaryGap: false,
-	        data: ['周一','周二','周三','周四','周五','周六','周日']
+	        data: []
 	    },
 	    yAxis: {
 	        type: 'value'
 	    },
-	    series: [
-	        {
-	            name:'http://editor.baidu...',
-	            type:'line',
-	            data:[120, 132, 101, 134, 90, 230, 210]
-	        },
-	        {
-	            name:'http://editor.baidu1...',
-	            type:'line',
-	            data:[220, 182, 191, 234, 290, 330, 310]
-	        }
-	    ]
+	    series: []
 	};
 	entryLine.setOption(option);
 }
@@ -140,35 +128,42 @@ function ajaxPieLine(){
 	var startDate = $("#startDate").val();
 	var endDate = $("#endDate").val();
 	var param = {module:'API',method:'Actions.getEntryPageUrls',idSite:idSite,period:'range',date:startDate+","+endDate,format:'json',token_auth:t,filter_limit:'10',filter_sort_column:'entry_nb_visits',filter_sort_order:'desc'};
+	entryPie.showLoading();
+	entryLine.showLoading();
 	ajax_jsonp(piwik_url,param,function(data){
 		data = eval(data);
 		pieData = data;
 		// 根据top10的url获取各url趋势数据
 		lineData = {};
-		var urls = new Array();
-		// 获取top10的url
-		var top10Urls = [];
-		for(var k in pieData){
-			var url = pieData[k].url;
-			top10Urls.push(url);
-		}
-		// 组装接口参数
-		for(var k in top10Urls){
-			var url = top10Urls[k];
-			if(url != null && url != ""){
-				urls.push(encodeURI("module=API&method=Actions.getPageUrl&pageUrl="+url+"&idSite="+idSite+"&period=day&date="+startDate+","+endDate+"&format=json&token_auth="+t));
+		if(pieData.length!=0){
+			var urls = new Array();
+			// 获取top10的url
+			var top10Urls = [];
+			for(var k in pieData){
+				var url = pieData[k].url;
+				top10Urls.push(url);
 			}
-		}
-		var p = getBulkRequestParam(urls);
-		// 组装折线图数据
-		ajax_jsonp(piwik_url,p,function(data){
-			data = eval(data);
-			for(var i=0;i<top10Urls.length;i++){
-				var url = top10Urls[i];
-				lineData[url] = data[i];
+			// 组装接口参数
+			for(var k in top10Urls){
+				var url = top10Urls[k];
+				if(url != null && url != ""){
+					urls.push(encodeURI("module=API&method=Actions.getPageUrl&pageUrl="+url+"&idSite="+idSite+"&period=day&date="+startDate+","+endDate+"&format=json&token_auth="+t));
+				}
 			}
+			var p = getBulkRequestParam(urls);
+			// 组装折线图数据
+			ajax_jsonp(piwik_url,p,function(data){
+				data = eval(data);
+				for(var i=0;i<top10Urls.length;i++){
+					var url = top10Urls[i];
+					lineData[url] = data[i];
+				}
+				refreshPieLine();
+			});
+		}else{
 			refreshPieLine();
-		});
+		}
+		
 	});
 }
 
@@ -206,6 +201,7 @@ function refreshPieLine(){
 			data : pie
 		}]
 	}
+	entryPie.hideLoading();
 	entryPie.setOption(pieOption);
 	// 更新折线图
 	var legendData = [];
@@ -243,10 +239,9 @@ function refreshPieLine(){
 		}
 		series.push({name:url,type:'line',data:seriesData});
 	}
-	// 超过4个的url趋势图隐藏,有bug
-	debugger;
+	// 超过4个的url趋势图隐藏
 	if(legendData.length > 4){
-		for(var i=4;i<legendData.length-4;i++){
+		for(var i=4;i<legendData.length;i++){
 			legendSelected[legendData[i]] = false;
 		}
 	}
@@ -260,6 +255,9 @@ function refreshPieLine(){
 	    },
 	    series: series
 	};
+	entryLine.clear();
+	initLine();
+	entryLine.hideLoading();
 	entryLine.setOption(lineOption);
 }
 
@@ -273,21 +271,28 @@ function btnSelect(index){
 // 饼图折线图end
 
 // url详情表格start
+// 请求表格数据
+function ajaxCsTable(){
+	var csData = [];
+	var startDate = $("#startDate").val();
+	var endDate = $("#endDate").val();
+	var param = {module:'API',method:'Actions.getEntryPageUrls',idSite:idSite,period:'range',date:startDate+','+endDate,format:'json',token_auth:t,filter_sort_column:'entry_nb_visits',filter_sort_order:'desc'};
+	ajax_jsonp(piwik_url,param,function(data){
+		data = eval(data);
+		for(var k in data){
+			var row = data[k];
+			csData.push({url:cutStr(row.url,100),pv:row.nb_hits,uv:row.nb_visits,env:row.entry_nb_visits,br:row.bounce_rate,at:formatTime(row.avg_time_on_page),avg:row.avg_time_generation})
+		}
+		initCsTable(csData);
+	});
+}
 // 构造表格数据
-function initCsTable(){
-	var data = [
-		{a:'2017-08-09',b:'2',c:'1',d:'1',e:'1',f:'0%',g:'00:00:25'},
-		{a:'2017-08-08',b:'2',c:'1',d:'1',e:'1',f:'0%',g:'00:00:25'},
-		{a:'2017-08-07',b:'2',c:'1',d:'1',e:'1',f:'0%',g:'00:00:25'},
-		{a:'2017-08-06',b:'2',c:'1',d:'1',e:'1',f:'0%',g:'00:00:25'},
-		{a:'2017-08-05',b:'2',c:'1',d:'1',e:'1',f:'0%',g:'00:00:25'},
-		{a:'2017-08-04',b:'2',c:'1',d:'1',e:'1',f:'0%',g:'00:00:25'}
-	];
+function initCsTable(csData){
 	var cs = new table({
 		"tableId": "cs_table", //必须
-		"headers": ["日期", "浏览量(PV)", "访客数(UV)", "访问", "用户数","跳出率","平均访问时长"], //必须
-		"customHeader" : "<thead><tr><th rowspan='2'>日期</th><th colspan='4'>网站基础指标</th><th colspan='2'>流量质量指标</th></tr><tr><th>浏览量(PV)</th><th>访客数(UV)</th><th>访问</th><th>用户数</th><th>跳出率</th><th>平均访问时长</th></tr></thead>", // 自定义表头，若定义则覆盖默认表头
-		"data": data, //必须
+		"headers": ["页面URL", "访问次数", "唯一页面浏览量", "贡献浏览量", "跳出率","平均访问时长","平均生成时间(秒)"], //必须
+		"customHeader" : "<thead><tr><th rowspan='2'>页面URL</th><th colspan='2'>网站基础指标</th><th colspan='4'>流量质量指标</th></tr><tr><th>访问次数</th><th>唯一页面浏览量</th><th>贡献浏览量</th><th>跳出率</th><th>平均访问时长</th><th>平均生成时间(秒)</th></tr></thead>", // 自定义表头，若定义则覆盖默认表头
+		"data": csData, //必须
 		"displayNum": 15, //必须  默认 10
 		"groupDataNum": 9 //可选  默认 10
 	});
