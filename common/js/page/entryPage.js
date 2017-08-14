@@ -281,7 +281,7 @@ function ajaxCsTable(){
 		data = eval(data);
 		for(var k in data){
 			var row = data[k];
-			csData.push({url:cutStr(row.url,100),pv:row.nb_hits,uv:row.nb_visits,env:row.entry_nb_visits,br:row.bounce_rate,at:formatTime(row.avg_time_on_page),avg:row.avg_time_generation})
+			csData.push({url:'<a href="'+row.url+'" target="_blank">'+cutStr(row.url,100)+'</a>',pv:row.nb_hits,uv:row.nb_visits,env:row.entry_nb_visits,br:row.bounce_rate,at:formatTime(row.avg_time_on_page),avg:row.avg_time_generation})
 		}
 		initCsTable(csData);
 	});
@@ -290,8 +290,8 @@ function ajaxCsTable(){
 function initCsTable(csData){
 	var cs = new table({
 		"tableId": "cs_table", //必须
-		"headers": ["页面URL", "访问次数", "唯一页面浏览量", "贡献浏览量", "跳出率","平均访问时长","平均生成时间(秒)"], //必须
-		"customHeader" : "<thead><tr><th rowspan='2'>页面URL</th><th colspan='2'>网站基础指标</th><th colspan='4'>流量质量指标</th></tr><tr><th>访问次数</th><th>唯一页面浏览量</th><th>贡献浏览量</th><th>跳出率</th><th>平均访问时长</th><th>平均生成时间(秒)</th></tr></thead>", // 自定义表头，若定义则覆盖默认表头
+		"headers": ["页面URL", "访问次数", "唯一页面浏览量", "贡献浏览量", "跳出率","平均访问时长","平均生成时长(秒)"], //必须
+		"customHeader" : "<thead><tr><th rowspan='2'>页面URL</th><th colspan='2'>网站基础指标</th><th colspan='4'>流量质量指标</th></tr><tr><th>访问次数</th><th>唯一页面浏览量</th><th>贡献浏览量</th><th>跳出率</th><th>平均访问时长</th><th>平均生成时长(秒)</th></tr></thead>", // 自定义表头，若定义则覆盖默认表头
 		"data": csData, //必须
 		"displayNum": 15, //必须  默认 10
 		"groupDataNum": 9 //可选  默认 10
