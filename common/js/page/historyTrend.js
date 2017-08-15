@@ -7,18 +7,15 @@ $(function(){
 	url = getQueryString("href");
 	$("[data-toggle='tooltip']").tooltip();
 	$("#trendUrl").html(cutStr(url,50));
-	//默认最近7天
-	$("#date").html(getDateStr(-6)+" ~ "+getDateStr(0));
-    	$("#startDate").val(getDateStr(-6));
+	//默认最近30天
+	$("#date").html(getDateStr(-29)+" ~ "+getDateStr(0));
+    	$("#startDate").val(getDateStr(-29));
 	$("#endDate").val(getDateStr(0));
 	
+	// 初始化url趋势图
+	var urlTrendChart = null;
+	init_visit();
 	ajaxUrlData(); // 刷新当前url趋势数据
-//	// 加载访客概览图
-//	ajax_visit_summary();
-//	// 加载访客趋势图
-//	var visitTrendChart = null;
-//	init_visit();
-//	ajax_visit();
 	
 	//时间切换
 	$("#dateDiv button").click(function() {
@@ -57,10 +54,6 @@ $(function(){
 					null;
 			};
 			ajaxUrlData(); // 刷新当前url趋势数据
-//			// 加载访客概览图
-//			ajax_visit_summary();
-//			// 加载访客趋势图
-//			ajax_visit();
 		} 
     });
 });
@@ -68,13 +61,10 @@ $(function(){
 function dateSelect(){
 	$("#date").html($("#startDate").val()+" ~ "+$("#endDate").val());
 	ajaxUrlData(); // 刷新当前url趋势数据
-//	ajax_visit_summary();
-//	ajax_visit();
-
 }
 // 图表自适应
 window.onresize = function(){
-	visitTrendChart.resize();
+	urlTrendChart.resize();
 }
 
 // 刷新当前url趋势数据
@@ -91,38 +81,36 @@ function ajaxUrlData(){
 		data = eval(data);
 		urlSummary = data[0];
 		urlDetail = data[1];
-		//console.info(urlDetail);
+		ana_visit_summary(); // 加载url概览图
+		ana_visit();// 加载url趋势图
 		anaCsTable(); // 加载访客数据表
 		
 	});
 }
 
-// 访客趋势图start
-// 加载访客概览图
-function ajax_visit_summary(){
-	var startDate = $("#startDate").val();
-	var endDate = $("#endDate").val();
-	var p1 = "module=API&method=MultiSites.getOne&idSite="+idSite+"&period=range&date="+startDate+","+endDate+"&format=JSON&token_auth="+t;
-	var p2 = "module=API&method=VisitsSummary.get&idSite="+idSite+"&period=range&date="+startDate+","+endDate+"&format=JSON&token_auth="+t;
-	var urls = new Array();
-	urls.push(encodeURI(p1));
-	urls.push(encodeURI(p2));
-	var p = getBulkRequestParam(urls);
-	ajax_jsonp(piwik_url, p, function(data){
-		data = eval(data);
-		var ms = data[0];
-		var vs = data[1];
-		$("#d_pv").html(ms["nb_pageviews"]);
-		$("#d_uv").html(vs["nb_uniq_visitors"]);
-		$("#d_visit").html(vs["nb_visits"]);
-		$("#d_user").html(vs["nb_users"]);
-		$("#d_br").html(vs["bounce_rate"]);
-		$("#d_at").html(formatTime(vs["avg_time_on_site"]));
-	});
+// url趋势图start
+// 加载url概览图
+function ana_visit_summary(){
+	if(urlSummary.length == 0){
+		$("#d_nh").html("0");
+		$("#d_nv").html("0");
+		$("#d_atop").html("00:00:00");
+		$("#d_br").html("0%");
+		$("#d_er").html("0%");
+		$("#d_atg").html("0");
+	}else{
+		var d = urlSummary[0];
+		$("#d_nh").html(d.nb_hits);
+		$("#d_nv").html(d.nb_visits);
+		$("#d_atop").html(formatTime(d.avg_time_on_page));
+		$("#d_br").html(d.bounce_rate);
+		$("#d_er").html(d.exit_rate);
+		$("#d_atg").html(d.avg_time_generation);
+	}
 }
-// 初始化访客趋势图
+// 初始化url趋势图
 function init_visit(){
-	visitTrendChart = echarts.init(document.getElementById('visitTrend'));
+	urlTrendChart = echarts.init(document.getElementById('urlTrend'));
 	var option = {
 	    title: {},
 	    tooltip: {trigger: 'axis',},
@@ -133,178 +121,169 @@ function init_visit(){
 	    yAxis: {type: 'value'},
 	    series: []
 	};
-	visitTrendChart.setOption(option);
+	urlTrendChart.setOption(option);
 }
-//加载访客趋势图
-function ajax_visit(){
-	var startDate = $("#startDate").val();
-	var endDate = $("#endDate").val();
-	var visitTendencyIndex = $("#visitTendencyIndex").val(); // 指标
-	var param = {};
+//加载url趋势图
+function ana_visit(){
+	var urlTendencyIndex = $("#urlTendencyIndex").val(); // 指标
 	var option = {};
-	visitTrendChart.showLoading();
+	urlTrendChart.showLoading();
 	// 浏览量(PV)
-	if("pv"==visitTendencyIndex){
-		param = {module:"API",method:"MultiSites.getOne",idSite:idSite,period:"day",date:startDate+","+endDate,format:"json",token_auth:t};
-		ajax_jsonp(piwik_url, param, function(data){
-			data = eval(data);
-			var categories = new Array();
-			var datas = new Array();
-			for(var k in data){
-				categories.push(k);
-				datas.push(data[k].nb_pageviews);
+	if("nh"==urlTendencyIndex){
+		var categories = new Array();
+		var datas = new Array();
+		for(var k in urlDetail){
+			categories.push(k);
+			if(urlDetail[k].length == 0){
+				datas.push(0);
+			}else{
+				datas.push(urlDetail[k][0].nb_hits);
 			}
-			option = {
-				legend: {data:["浏览量(PV)"]},
-				tooltip:{formatter:function(params){return params[0].name + ' <br/>' + params[0].seriesName + ": " + params[0].value;}},
-		    		xAxis: {data:categories},
-		    		yAxis: {axisLabel:{formatter: '{value}'}},
-		    		series:[{name:'浏览量(PV)',type:'line',stack: '浏览量(PV)',itemStyle:{normal:{color: '#87CEEB',lineStyle:{color:'#87CEEB'}}},
-		            areaStyle: {normal: {color:'#87CEEB'}},data:datas
-		    		}]
-			};
-			visitTrendChart.hideLoading();
-			visitTrendChart.setOption(option);
-		});
+		}
+		option = {
+			legend: {data:["浏览量(PV)"]},
+			tooltip:{formatter:function(params){return params[0].name + ' <br/>' + params[0].seriesName + ": " + params[0].value;}},
+	    		xAxis: {data:categories},
+	    		yAxis: {axisLabel:{formatter: '{value}'}},
+	    		series:[{name:'浏览量(PV)',type:'line',stack: '浏览量(PV)',itemStyle:{normal:{color: '#87CEEB',lineStyle:{color:'#87CEEB'}}},
+	            areaStyle: {normal: {color:'#87CEEB'}},data:datas
+	    		}]
+		};
+		urlTrendChart.hideLoading();
+		urlTrendChart.setOption(option);
 	}
-	// 访客数(UV)
-	else if("uv"==visitTendencyIndex){
-		param = {module:"API",method:"VisitsSummary.get",idSite:idSite,period:"day",date:startDate+","+endDate,format:"json",token_auth:t,columns:"nb_uniq_visitors"};
-		ajax_jsonp(piwik_url, param, function(data){
-			data = eval(data);
-			var categories = new Array();
-			var datas = new Array();
-			for(var k in data){
-				categories.push(k);
-				datas.push(data[k]);
+	// 唯一页面浏览量
+	else if("nv"==urlTendencyIndex){
+		var categories = new Array();
+		var datas = new Array();
+		for(var k in urlDetail){
+			categories.push(k);
+			if(urlDetail[k].length == 0){
+				datas.push(0);
+			}else{
+				datas.push(urlDetail[k][0].nb_visits);
 			}
-			option = {
-				legend: {data:["访客数(UV)"]},
-				tooltip:{formatter:function(params){return params[0].name + ' <br/>' + params[0].seriesName + ": " + params[0].value;}},
-		    		xAxis: {data:categories},
-		    		yAxis: {axisLabel:{formatter: '{value}'}},
-		    		series:[{name:'访客数(UV)',type:'line',stack: '访客数(UV)',itemStyle:{normal:{color: '#87CEEB',lineStyle:{color:'#87CEEB'}}},
-		            areaStyle: {normal: {color:'#87CEEB'}},data:datas
-		    		}]
-			};
-			visitTrendChart.hideLoading();
-			visitTrendChart.setOption(option);
-		});
+		}
+		option = {
+			legend: {data:["唯一页面浏览量"]},
+			tooltip:{formatter:function(params){return params[0].name + ' <br/>' + params[0].seriesName + ": " + params[0].value;}},
+	    		xAxis: {data:categories},
+	    		yAxis: {axisLabel:{formatter: '{value}'}},
+	    		series:[{name:'唯一页面浏览量',type:'line',stack: '唯一页面浏览量',itemStyle:{normal:{color: '#87CEEB',lineStyle:{color:'#87CEEB'}}},
+	            areaStyle: {normal: {color:'#87CEEB'}},data:datas
+	    		}]
+		};
+		urlTrendChart.hideLoading();
+		urlTrendChart.setOption(option);
 	}
-	// 访问
-	else if("visit" == visitTendencyIndex){
-		param = {module:"API",method:"VisitsSummary.get",idSite:idSite,period:"day",date:startDate+","+endDate,format:"json",token_auth:t,columns:"nb_visits"};
-		ajax_jsonp(piwik_url, param, function(data){
-			data = eval(data);
-			var categories = new Array();
-			var datas = new Array();
-			for(var k in data){
-				categories.push(k);
-				datas.push(data[k]);
+	// 平均访问时长
+	else if("atop" == urlTendencyIndex){
+		var categories = new Array();
+		var datas = new Array();
+		for(var k in urlDetail){
+			categories.push(k);
+			if(urlDetail[k].length == 0){
+				datas.push(0);
+			}else{
+				datas.push(urlDetail[k][0].avg_time_on_page);
 			}
-			option = {
-				legend: {data:["访问"]},
-				tooltip:{formatter:function(params){return params[0].name + ' <br/>' + params[0].seriesName + ": " + params[0].value;}},
-		    		xAxis: {data:categories},
-		    		yAxis: {axisLabel:{formatter: '{value}'}},
-		    		series:[{name:'访问',type:'line',stack: '访问',itemStyle:{normal:{color: '#87CEEB',lineStyle:{color:'#87CEEB'}}},
-		            areaStyle: {normal: {color:'#87CEEB'}},data:datas
-		    		}]
-			};
-			visitTrendChart.hideLoading();
-			visitTrendChart.setOption(option);
-		});
-	}
-	// 用户数
-	else if("user" == visitTendencyIndex){
-		param = {module:"API",method:"VisitsSummary.get",idSite:idSite,period:"day",date:startDate+","+endDate,format:"json",token_auth:t,columns:"nb_users"};
-		ajax_jsonp(piwik_url, param, function(data){
-			data = eval(data);
-			var categories = new Array();
-			var datas = new Array();
-			for(var k in data){
-				categories.push(k);
-				datas.push(data[k]);
-			}
-			option = {
-				legend: {data:["用户数"]},
-				tooltip:{formatter:function(params){return params[0].name + ' <br/>' + params[0].seriesName + ": " + params[0].value;}},
-		    		xAxis: {data:categories},
-		    		yAxis: {axisLabel:{formatter: '{value}'}},
-		    		series:[{name:'用户数',type:'line',stack: '用户数',itemStyle:{normal:{color: '#87CEEB',lineStyle:{color:'#87CEEB'}}},
-		            areaStyle: {normal: {color:'#87CEEB'}},data:datas
-		    		}]
-			};
-			visitTrendChart.hideLoading();
-			visitTrendChart.setOption(option);
-		});
+			
+		}
+		option = {
+			legend: {data:["平均访问时长"]},
+			tooltip:{formatter:function(params){return params[0].name + ' <br/>' + params[0].seriesName + ": " + formatTime(params[0].value);}},
+	    		xAxis: {data:categories},
+	    		yAxis: {axisLabel:{formatter: '{value}'}},
+	    		series:[{name:'平均访问时长',type:'line',stack: '平均访问时长',itemStyle:{normal:{color: '#87CEEB',lineStyle:{color:'#87CEEB'}}},
+	            areaStyle: {normal: {color:'#87CEEB'}},data:datas
+	    		}]
+		};
+		urlTrendChart.hideLoading();
+		urlTrendChart.setOption(option);
 	}
 	// 跳出率
-	else if("br" == visitTendencyIndex){
-		param = {module:"API",method:"VisitsSummary.get",idSite:idSite,period:"day",date:startDate+","+endDate,format:"json",token_auth:t,columns:"bounce_rate"};
-		ajax_jsonp(piwik_url, param, function(data){
-			data = eval(data);
-			var categories = new Array();
-			var datas = new Array();
-			for(var k in data){
-				categories.push(k);
-				var br = data[k];
-				if(br instanceof Array){
-					br = "0";
-				}else{
-					br = br.substr(0,br.length-1);
-				}
-				datas.push(br);
+	else if("br" == urlTendencyIndex){
+		var categories = new Array();
+		var datas = new Array();
+		for(var k in urlDetail){
+			categories.push(k);
+			var br = urlDetail[k];
+			if(br.length == 0){
+				datas.push("0");
+			}else{
+				var s = br[0].bounce_rate;
+				datas.push(s.substr(0,s.length-1));
 			}
-			option = {
-				legend: {data:["跳出率"]},
-				tooltip:{formatter:function(params){return params[0].name + ' <br/>' + params[0].seriesName + ": " + params[0].value + '%';}},
-		    		xAxis: {data:categories},
-		    		yAxis: {axisLabel:{formatter: '{value}%'}},
-		    		series:[{name:'跳出率',type:'line',stack: '跳出率',itemStyle:{normal:{color: '#87CEEB',lineStyle:{color:'#87CEEB'}}},
-		            areaStyle: {normal: {color:'#87CEEB'}},data:datas
-		    		}]
-			};
-			visitTrendChart.hideLoading();
-			visitTrendChart.setOption(option);
-		});
+		}
+		option = {
+			legend: {data:["跳出率"]},
+			tooltip:{formatter:function(params){return params[0].name + ' <br/>' + params[0].seriesName + ": " + params[0].value + '%';}},
+	    		xAxis: {data:categories},
+	    		yAxis: {axisLabel:{formatter: '{value}%'}},
+	    		series:[{name:'跳出率',type:'line',stack: '跳出率',itemStyle:{normal:{color: '#87CEEB',lineStyle:{color:'#87CEEB'}}},
+	            areaStyle: {normal: {color:'#87CEEB'}},data:datas
+	    		}]
+		};
+		urlTrendChart.hideLoading();
+		urlTrendChart.setOption(option);
 	}
-	// 平均访问时长(秒)
-	else if("at" == visitTendencyIndex){
-		param = {module:"API",method:"VisitsSummary.get",idSite:idSite,period:"day",date:startDate+","+endDate,format:"json",token_auth:t,columns:"avg_time_on_site"};
-		ajax_jsonp(piwik_url, param, function(data){
-			data = eval(data);
-			var categories = new Array();
-			var datas = new Array();
-			for(var k in data){
-				categories.push(k);
-				var at = data[k];
-				if(at instanceof Array){
-					at = 0;
-				}
-				datas.push(at);
+	// 退出率
+	else if("er" == urlTendencyIndex){
+		var categories = new Array();
+		var datas = new Array();
+		for(var k in urlDetail){
+			categories.push(k);
+			var er = urlDetail[k];
+			if(er.length == 0){
+				datas.push("0");
+			}else{
+				var s = er[0].exit_rate;
+				datas.push(s.substr(0,s.length-1));
 			}
-			option = {
-				legend: {data:["平均访问时长"]},
-				tooltip:{formatter:function(params){return params[0].name + ' <br/>' + params[0].seriesName + ": " + formatTime(params[0].value);}},
-		    		xAxis: {data:categories},
-		    		yAxis: {axisLabel:{formatter: '{value}'}},
-		    		series:[{name:'平均访问时长',type:'line',stack: '平均访问时长',itemStyle:{normal:{color: '#87CEEB',lineStyle:{color:'#87CEEB'}}},
-		            areaStyle: {normal: {color:'#87CEEB'}},data:datas
-		    		}]
-			};
-			visitTrendChart.hideLoading();
-			visitTrendChart.setOption(option);
-		});
+		}
+		option = {
+			legend: {data:["退出率"]},
+			tooltip:{formatter:function(params){return params[0].name + ' <br/>' + params[0].seriesName + ": " + params[0].value + '%';}},
+	    		xAxis: {data:categories},
+	    		yAxis: {axisLabel:{formatter: '{value}%'}},
+	    		series:[{name:'退出率',type:'line',stack: '退出率',itemStyle:{normal:{color: '#87CEEB',lineStyle:{color:'#87CEEB'}}},
+	            areaStyle: {normal: {color:'#87CEEB'}},data:datas
+	    		}]
+		};
+		urlTrendChart.hideLoading();
+		urlTrendChart.setOption(option);
+	}
+	// 平均生成时长(秒)
+	else if("atg" == urlTendencyIndex){
+		var categories = new Array();
+		var datas = new Array();
+		for(var k in urlDetail){
+			categories.push(k);
+			if(urlDetail[k].length == 0){
+				datas.push(0);
+			}else{
+				datas.push(urlDetail[k][0].avg_time_generation);
+			}
+		}
+		option = {
+			legend: {data:["平均生成时长"]},
+			tooltip:{formatter:function(params){return params[0].name + ' <br/>' + params[0].seriesName + ": " + params[0].value + '秒';}},
+	    		xAxis: {data:categories},
+	    		yAxis: {axisLabel:{formatter: '{value}秒'}},
+	    		series:[{name:'平均生成时长',type:'line',stack: '平均生成时长',itemStyle:{normal:{color: '#87CEEB',lineStyle:{color:'#87CEEB'}}},
+	            areaStyle: {normal: {color:'#87CEEB'}},data:datas
+	    		}]
+		};
+		urlTrendChart.hideLoading();
+		urlTrendChart.setOption(option);
 	}
 }
 
 // 指标按钮点击事件
-function visitTendency_btn(index){
-	$("#visitTendency_btn_text").text("指标："+$("#btn_"+index).text());
-	$("#visitTendencyIndex").val(index);
-	// 刷新访客趋势图
-	ajax_visit();
+function urlTendency_btn(index){
+	$("#urlTendency_btn_text").text("指标："+$("#btn_"+index).text());
+	$("#urlTendencyIndex").val(index);
+	ana_visit(); // 刷新url趋势图
 }
 // 访客趋势图end
 
@@ -315,7 +294,7 @@ function anaCsTable(){
 	for(var k in urlDetail){
 		var v = urlDetail[k];
 		if(v.length == 0){
-			csData.push({time:k,pv:0,nv:0,atop:formatTime(0),br:'0%',er:'0%',atg:0});
+			csData.push({time:k,pv:0,nv:0,atop:'00:00:00',br:'0%',er:'0%',atg:0});
 		}else{
 			var row = v[0];
 			csData.push({time:k,pv:row.nb_hits,nv:row.nb_visits,atop:formatTime(row.avg_time_on_page),br:row.bounce_rate,er:row.exit_rate,atg:row.avg_time_generation});	
@@ -327,8 +306,8 @@ function anaCsTable(){
 function initCsTable(csData){
 	var cs = new table({
 		"tableId": "cs_table", //必须
-		"headers": ["页面URL", "浏览量", "唯一页面浏览量", "平均访问时长", "跳出率","退出率","平均生成时长(秒)"], //必须
-		"customHeader" : "<thead><tr><th rowspan='2'>页面URL</th><th colspan='2'>网站基础指标</th><th colspan='4'>流量质量指标</th></tr><tr><th>浏览量</th><th>唯一页面浏览量</th><th>平均访问时长</th><th>跳出率</th><th>退出率</th><th>平均生成时长(秒)</th></tr></thead>", // 自定义表头，若定义则覆盖默认表头
+		"headers": ["日期", "浏览量", "唯一页面浏览量", "平均访问时长", "跳出率","退出率","平均生成时长(秒)"], //必须
+		"customHeader" : "<thead><tr><th rowspan='2'>日期</th><th colspan='2'>网站基础指标</th><th colspan='4'>流量质量指标</th></tr><tr><th>浏览量</th><th>唯一页面浏览量</th><th>平均访问时长</th><th>跳出率</th><th>退出率</th><th>平均生成时长(秒)</th></tr></thead>", // 自定义表头，若定义则覆盖默认表头
 		"data": csData.reverse(), //必须
 		"displayNum": 15, //必须  默认 10
 		"groupDataNum": 9 //可选  默认 10
