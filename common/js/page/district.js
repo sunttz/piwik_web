@@ -56,6 +56,7 @@ $(function(){
 // 结束时间选择事件
 function dateSelect(){
 	$("#date").html($("#startDate").val()+" ~ "+$("#endDate").val());
+	$("#dateDiv button").removeClass("active");
 	ajax_district(); // 获取区域分布数据
 }
 // 图表自适应
@@ -249,7 +250,7 @@ function anaCsTable(){
 		var na = v.nb_actions;
 		var ana = (na / nv).toFixed(1);
 		var atos = formatTime((v.sum_visit_length / nv).toFixed(0));
-		var br = (v.bounce_count / nv).toFixed(2) * 100 + "%";
+		var br = (v.bounce_count / nv * 100).toFixed(0) + "%";
 		csData.push({cn:city_name,nv:nv,na:na,ana:ana,atos:atos,br:br});
 	}
 	initCsTable(csData);

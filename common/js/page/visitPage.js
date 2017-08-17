@@ -52,6 +52,7 @@ $(function(){
 // 结束时间选择事件
 function dateSelect(){
 	$("#date").html($("#startDate").val()+" ~ "+$("#endDate").val());
+	$("#dateDiv button").removeClass("active");
 	// 加载访客数据表
 	ajaxCsTable();
 }

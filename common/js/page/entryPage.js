@@ -64,6 +64,7 @@ $(function(){
 // 结束时间选择事件
 function dateSelect(){
 	$("#date").html($("#startDate").val()+" ~ "+$("#endDate").val());
+	$("#dateDiv button").removeClass("active");
 	ajaxPieLine(); // 更新图表数据
 	ajaxCsTable(); // 更新详情表格
 }

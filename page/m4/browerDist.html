@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>浏览器分布</title>
+		<script type="text/javascript">
+	    		var idSite = "";
+	    		var t = "";
+	    </script>
+	    <script type="text/javascript" src="../../common/js/common1.js"></script>
+	    <style type="text/css">
+	    		.main {border-left: none;border-right: none;background-color: #ececec;height:'100%';padding-bottom: 5px;}
+	    		.content-header-wrapper {width: auto;left: 0px;background-color: #fff;height: 100px;border:1px solid #E8E8E8}
+	    		.main-content {height: '100%';margin: 15px;background-color: #fff;}
+	    		.table-grid-item {margin-top: 1px; background-color: #fff; height: 420px;}
+	    </style>
+	</head>
+	<body>
+		<div class="main">
+			<div id="content-header-wrapper" class="content-header-wrapper">
+				<div id="content-header" style="padding: 10px 10px 0 10px;">
+					<div style="line-height: 18px;">
+						<div style="float: left;padding: 0;font-size: 14px;font-weight: bold;">浏览器分布</div>
+						<div style="float: left;margin-left: 5px;font-size: 14px;">( <span id="date"></span> )</div>
+					</div>
+				</div>
+				<div style="clear: both;"></div>
+				<div id="DateSelectBar" style="padding: 10px;">
+					<div class="control-bar-wrapper">
+						<span>时间：</span>
+						<div id="dateDiv" class="btn-group">
+							<button type="button" class="btn btn-default btn-sm" data="today" >今天</button>
+							<button type="button" class="btn btn-default btn-sm" data="yesterday" >昨天</button>
+							<button type="button" class="btn btn-default btn-sm active" data="thisWeek" >最近7天</button>
+							<button type="button" class="btn btn-default btn-sm" data="thisMonth" >最近30天</button>
+							<input id="dateKind" type="hidden" value="thisWeek" />
+							<div class="form-group" style="display: inline-block;margin: 0 0 0 20px;">
+		                 		<input type="text" class="form-control" name="startDate" id="startDate" style="display: block;float: left;overflow: hidden;width:110px;height: 30px;" onclick="WdatePicker({doubleCalendar:false,dateFmt:'yyyy-MM-dd',autoPickDate:true,minDate:'#{%y-1}-%M-%d',maxDate:'#F{$dp.$D(\'endDate\')||\'%y-%M-%d\'}',onpicked:function(){endDate.click();}});" />
+				                <label class="control-label" style="padding:3px 5px 0 0;float: left;">&nbsp;-</label>
+				                <input type="text" class="form-control" name="endDate" id="endDate" style="display: block;float: left;overflow: hidden;width:110px;height: 30px;" onclick="WdatePicker({doubleCalendar:false,minDate:'#F{$dp.$D(\'startDate\')}',maxDate:'%y-%M-%d',dateFmt:'yyyy-MM-dd',autoPickDate:true,onpicked:dateSelect});" />
+			                 </div>
+						</div>
+						
+					</div>
+				</div>
+			</div>
+			<div class="main-content">
+				<div style="background-color:#F8F8F8;">
+					<div id="browserBtn" class="btn-group">
+						<button id="btn_browsers" type="button" class="btn btn-default active" onclick="javascript:browser_btn('browsers')">浏览器名称</button>
+						<button id="btn_browsersVersions" type="button" class="btn btn-default" onclick="javascript:browser_btn('browsersVersions')">浏览器版本</button>
+						<button id="btn_osFamilies" type="button" class="btn btn-default" onclick="javascript:browser_btn('osFamilies')">操作系统名称</button>
+						<button id="btn_osVersions" type="button" class="btn btn-default" onclick="javascript:browser_btn('osVersions')">操作系统版本</button>
+						<button id="btn_resolution" type="button" class="btn btn-default" onclick="javascript:browser_btn('resolution')">分辨率</button>
+					</div>
+					<input type="hidden" id="browserIndex" value="browsers"/>
+				</div>
+				<div class="first-row">
+					<div style="float: left;width: 35%;">
+						<div class="table-grid-item">
+							<div id="browserPie" style="height:365px;margin-top: 10px;"></div>
+						</div>
+					</div>
+					<div style="float: right;width: 65%;">
+						<div class="table-grid-item">
+							<div id="browserBar" style="height:365px;margin-top: 20px;"></div>
+						</div>
+					</div>
+				</div>
+				<table id="cs_table" class="datatable">
+				</table>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../common/js/page/browerDist.js"></script>
+</html>
