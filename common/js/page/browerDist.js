@@ -87,6 +87,7 @@ function ajax_browser(){
 		data = eval(data);
 		browserData = data;
 		console.info(browserData);
+		anaPieBar(); // 加载图表
 		anaCsTable(); // 加载详情表格
 	});
 }
@@ -100,23 +101,18 @@ function init_pie(){
 	        formatter: "{a} <br/>{b} : {c} ({d}%)"
 	    },
 	    legend: {
+	    		show : false,
 	        orient: 'vertical',
 	        left: 'left',
-	        data: ['直接访问','邮件营销','联盟广告','视频广告','搜索引擎']
+	        data: []
 	    },
 	    series : [
 	        {
-	            name: '访问来源',
+	            name: '访问',
 	            type: 'pie',
 	            radius : '55%',
 	            center: ['50%', '60%'],
-	            data:[
-	                {value:335, name:'直接访问'},
-	                {value:310, name:'邮件营销'},
-	                {value:234, name:'联盟广告'},
-	                {value:135, name:'视频广告'},
-	                {value:1548, name:'搜索引擎'}
-	            ],
+	            data:[],
 	            itemStyle: {
 	                emphasis: {
 	                    shadowBlur: 10,
@@ -133,8 +129,7 @@ function init_pie(){
 // 初始化柱状图
 function init_bar(){
 	browserBarChart = echarts.init(document.getElementById('browserBar'));
-	var option = {
-	    color: ['#3398DB'],
+	var option = { 
 	    tooltip : {
 	        trigger: 'axis',
 	        axisPointer : {            // 坐标轴指示器，坐标轴触发有效
@@ -150,7 +145,7 @@ function init_bar(){
 	    xAxis : [
 	        {
 	            type : 'category',
-	            data : ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+	            data : [],
 	            axisTick: {
 	                alignWithLabel: true
 	            }
@@ -163,14 +158,83 @@ function init_bar(){
 	    ],
 	    series : [
 	        {
-	            name:'直接访问',
+	            name:'访问',
 	            type:'bar',
 	            barWidth: '60%',
-	            data:[10, 52, 200, 334, 390, 330, 220]
+	            data:[],
+	            itemStyle: {
+					normal: {
+						color: function(params) {
+							var colorList = ['#c23531','#2f4554', '#61a0a8', '#d48265', '#91c7ae','#749f83',  '#ca8622', '#bda29a','#6e7074', '#546570', '#c4ccd3'];
+							return colorList[params.dataIndex]
+						},
+						label: {
+							show: false
+						}
+					}
+				}
 	        }
 	    ]
 	};
 	browserBarChart.setOption(option);
+}
+
+// 解析图表数据
+function anaPieBar(){
+	browserPieChart.showLoading();
+	browserBarChart.showLoading();
+	// 如果超过10条记录，则只展示前10条
+	var bd = browserData;
+	if(bd.length > 10){
+		bd = bd.slice(0,9);
+	}
+	var xData = [];
+	var pieData = [];
+	var barData = [];
+	var browserIndex = $("#browserIndex").val(); // 指标
+	if(browserIndex == "browsers"){
+		name = "浏览器名称";
+	}else if(browserIndex == "browsersVersions"){
+		name = "浏览器版本";
+	}else if(browserIndex == "osFamilies"){
+		name = "操作系统名称";
+	}else if(browserIndex == "osVersions"){
+		name = "操作系统版本";
+	}else if(browserIndex == "resolution"){
+		name = "分辨率";
+	}
+	for(var k in bd){
+		var row = bd[k];
+		var label = row.label;
+		var nv = row.nb_visits;
+		xData.push(label);
+		pieData.push({value:nv,name:label});
+		barData.push(nv);
+	}
+	var pieOption = {
+		legend: {
+	        data: xData
+	    },
+	    series : [{
+	            data: pieData,
+	    }]
+	}
+	browserPieChart.setOption(pieOption);
+	browserPieChart.hideLoading();
+	var barOption = {
+		xAxis : [
+	        {
+	            data : xData,
+	        }
+	    ],
+	    series : [
+	        {
+	            data:barData
+	        }
+	    ]
+	};
+	browserBarChart.setOption(barOption);
+	browserBarChart.hideLoading();
 }
 
 // 指标按钮点击事件
