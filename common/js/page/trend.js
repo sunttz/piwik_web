@@ -326,10 +326,19 @@ function ajaxCsTable(){
 }
 // 构造表格数据
 function initCsTable(csData){
+	var customHeader = "<thead>"
+						+"<tr><th rowspan='2'>日期</th><th colspan='4'>网站基础指标</th><th colspan='2'>流量质量指标</th></tr>"
+						+"<tr><th title='页面被查看的次数。用户多次打开同一页面，浏览量值累计。'>浏览量(PV)</th>"
+						+"<th title='网站独立访客数量。即使一天之内多次访问网站也只会被统计一次。'>访客数(UV)</th>"
+						+"<th title='访客第一次访问你的网站或者距离上次访问时间超过30分钟，会被统计为新的访问。'>访问</th>"
+						+"<th title='登录你的网站的用户数量。它是具有用户ID组唯一活跃用户的数量。'>用户数</th>"
+						+"<th title='只查看单个页面的百分比，即访客直接从入口页面离开网站。'>跳出率</th>"
+						+"<th title='访客在一次访问中，平均打开网站的时长。'>平均访问时长</th>"
+						+"</tr></thead>";
 	var cs = new table({
 		"tableId": "cs_table", //必须
 		"headers": ["日期", "浏览量(PV)", "访客数(UV)", "访问", "用户数","跳出率","平均访问时长"], //必须
-		"customHeader" : "<thead><tr><th rowspan='2'>日期</th><th colspan='4'>网站基础指标</th><th colspan='2'>流量质量指标</th></tr><tr><th>浏览量(PV)</th><th>访客数(UV)</th><th>访问</th><th>用户数</th><th>跳出率</th><th>平均访问时长</th></tr></thead>", // 自定义表头，若定义则覆盖默认表头
+		"customHeader" : customHeader, // 自定义表头，若定义则覆盖默认表头
 		"data": csData.reverse(), //必须
 		"displayNum": 15, //必须  默认 10
 		"groupDataNum": 9 //可选  默认 10

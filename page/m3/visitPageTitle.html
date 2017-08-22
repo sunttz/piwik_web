@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta charset="UTF-8">
-		<title>浏览器分布</title>
+		<title>受访页面模块</title>
 		<script type="text/javascript">
 	    		var idSite = "";
 	    		var t = "";
@@ -20,7 +20,7 @@
 			<div id="content-header-wrapper" class="content-header-wrapper">
 				<div id="content-header" style="padding: 10px 10px 0 10px;">
 					<div style="line-height: 18px;">
-						<div style="float: left;padding: 0;font-size: 14px;font-weight: bold;">浏览器分布</div>
+						<div style="float: left;padding: 0;font-size: 14px;font-weight: bold;">受访页面模块</div>
 						<div style="float: left;margin-left: 5px;font-size: 14px;">( <span id="date"></span> )</div>
 					</div>
 				</div>
@@ -40,18 +40,14 @@
 				                <input type="text" class="form-control" name="endDate" id="endDate" style="display: block;float: left;overflow: hidden;width:110px;height: 30px;" onclick="WdatePicker({doubleCalendar:false,minDate:'#F{$dp.$D(\'startDate\')}',maxDate:'%y-%M-%d',dateFmt:'yyyy-MM-dd',autoPickDate:true,onpicked:dateSelect});" />
 			                 </div>
 						</div>
-						
 					</div>
 				</div>
 			</div>
 			<div class="main-content">
 				<div style="background-color:#F8F8F8;">
 					<div id="browserBtn" class="btn-group">
-						<button id="btn_browsers" type="button" class="btn btn-default active" onclick="javascript:browser_btn('browsers')">浏览器名称</button>
-						<button id="btn_browsersVersions" type="button" class="btn btn-default" onclick="javascript:browser_btn('browsersVersions')">浏览器版本</button>
-						<button id="btn_osFamilies" type="button" class="btn btn-default" onclick="javascript:browser_btn('osFamilies')">操作系统名称</button>
-						<button id="btn_osVersions" type="button" class="btn btn-default" onclick="javascript:browser_btn('osVersions')">操作系统版本</button>
-						<button id="btn_resolution" type="button" class="btn btn-default" onclick="javascript:browser_btn('resolution')">画面分辨率</button>
+						<button id="btn_browsers" type="button" class="btn btn-default active" onclick="javascript:browser_btn('browsers')">分级显示</button>
+						<button id="btn_browsersVersions" type="button" class="btn btn-default" onclick="javascript:browser_btn('browsersVersions')">不分级显示</button>
 					</div>
 					<input type="hidden" id="browserIndex" value="browsers"/>
 				</div>
@@ -72,5 +68,5 @@
 			</div>
 		</div>
 	</body>
-	<script type="text/javascript" src="../../common/js/page/browerDist.js"></script>
+	<script type="text/javascript" src="../../common/js/page/visitPageTitle.js"></script>
 </html>

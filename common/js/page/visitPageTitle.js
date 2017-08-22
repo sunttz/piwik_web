@@ -13,7 +13,6 @@ $(function(){
 	init_bar();
 	ajax_browser(); // 获取浏览器分布数据
 	
-	
 	//时间切换
 	$("#dateDiv button").click(function() {
 		var str = $(this).attr("data");

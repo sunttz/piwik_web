@@ -289,10 +289,19 @@ function ajaxCsTable(){
 }
 // 构造表格数据
 function initCsTable(csData){
+	var customHeader = "<thead>"
+						+"<tr><th rowspan='2'>页面URL</th><th colspan='2'>网站基础指标</th><th colspan='4'>流量质量指标</th></tr>"
+						+"<tr><th title='页面被查看的次数。用户多次打开同一页面，浏览量值累计。'>访问次数</th>"
+						+"<th title='浏览了该页面的访问次数。如果一次访问中多次浏览同一页面，只统计一次。'>唯一页面浏览量</th>"
+						+"<th title='指以该页面作为入口产生的浏览量总计。'>贡献浏览量</th>"
+						+"<th title='只查看单个页面的百分比，即访客直接从入口页面离开网站。'>跳出率</th>"
+						+"<th title='访客在一次访问中，平均打开网站的时长。'>平均访问时长</th>"
+						+"<th title='生成页面的平均时间。'>平均生成时长(秒)</th>"
+						+"</tr></thead>";
 	var cs = new table({
 		"tableId": "cs_table", //必须
 		"headers": ["页面URL", "访问次数", "唯一页面浏览量", "贡献浏览量", "跳出率","平均访问时长","平均生成时长(秒)"], //必须
-		"customHeader" : "<thead><tr><th rowspan='2'>页面URL</th><th colspan='2'>网站基础指标</th><th colspan='4'>流量质量指标</th></tr><tr><th>访问次数</th><th>唯一页面浏览量</th><th>贡献浏览量</th><th>跳出率</th><th>平均访问时长</th><th>平均生成时长(秒)</th></tr></thead>", // 自定义表头，若定义则覆盖默认表头
+		"customHeader" : customHeader, // 自定义表头，若定义则覆盖默认表头
 		"data": csData, //必须
 		"displayNum": 15, //必须  默认 10
 		"groupDataNum": 9 //可选  默认 10
