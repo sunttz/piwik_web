@@ -186,7 +186,7 @@ function anaPieBar(){
 	// 如果超过10条记录，则只展示前10条
 	var bd = browserData;
 	if(bd.length > 10){
-		bd = bd.slice(0,9);
+		bd = bd.slice(0,10);
 	}
 	var xData = [];
 	var pieData = [];

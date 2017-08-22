@@ -12,7 +12,7 @@
 	    		.main {border-left: none;border-right: none;background-color: #ececec;height:'100%';padding-bottom: 5px;}
 	    		.content-header-wrapper {width: auto;left: 0px;background-color: #fff;height: 100px;border:1px solid #E8E8E8}
 	    		.main-content {height: '100%';margin: 15px;background-color: #fff;}
-	    		.table-grid-item {margin-top: 1px; background-color: #fff; height: 420px;}
+	    		.table-grid-item {margin-top: 1px; background-color: #fff; height: 390px;}
 	    </style>
 	</head>
 	<body>
@@ -45,21 +45,23 @@
 			</div>
 			<div class="main-content">
 				<div style="background-color:#F8F8F8;">
-					<div id="browserBtn" class="btn-group">
-						<button id="btn_browsers" type="button" class="btn btn-default active" onclick="javascript:browser_btn('browsers')">分级显示</button>
-						<button id="btn_browsersVersions" type="button" class="btn btn-default" onclick="javascript:browser_btn('browsersVersions')">不分级显示</button>
+					<div id="visitModuleBtn" class="btn-group">
+						<button id="btn_grade" type="button" class="btn btn-default active" onclick="javascript:visitModule_btn('grade')">分级显示</button>
+						<button id="btn_nograde" type="button" class="btn btn-default" onclick="javascript:visitModule_btn('nograde')">不分级显示</button>
 					</div>
-					<input type="hidden" id="browserIndex" value="browsers"/>
+					<input type="hidden" id="visitModuleIndex" value="grade"/>
 				</div>
 				<div class="first-row">
-					<div style="float: left;width: 35%;">
-						<div class="table-grid-item">
-							<div id="browserPie" style="height:365px;margin-top: 10px;"></div>
+					<div class="table-grid-item">
+						<div style="float: left;width: 35%;">
+							<div class="table-grid-item">
+								<div id="visitModulePie" style="height:365px;"></div>
+							</div>
 						</div>
-					</div>
-					<div style="float: right;width: 65%;">
-						<div class="table-grid-item">
-							<div id="browserBar" style="height:365px;margin-top: 20px;"></div>
+						<div style="float: right;width: 65%;">
+							<div class="table-grid-item">
+								<div id="visitModuleBar" style="height:365px;"></div>
+							</div>
 						</div>
 					</div>
 				</div>

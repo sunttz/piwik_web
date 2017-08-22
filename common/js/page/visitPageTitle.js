@@ -1,4 +1,4 @@
-var browserData = null; // 浏览器分布原始数据
+var visitModuleData = null; // 受访页面模块原始数据
 $(function(){
 	idSite = getQueryString("siteId");
 	t = getQueryString("t");
@@ -7,11 +7,11 @@ $(function(){
     	$("#startDate").val(getDateStr(-6));
 	$("#endDate").val(getDateStr(0));
 	
-	var browserPieChart = null;
+	var visitModulePieChart = null;
 	init_pie();
-	var browserBarChart = null;
+	var visitModuleBarChart = null;
 	init_bar();
-	ajax_browser(); // 获取浏览器分布数据
+	ajax_visitModule(); // 获取受访页面模块数据
 	
 	//时间切换
 	$("#dateDiv button").click(function() {
@@ -49,7 +49,7 @@ $(function(){
 				default:
 					null;
 			};
-			ajax_browser(); // 获取浏览器分布数据
+			ajax_visitModule(); // 获取受访页面模块数据
 		} 
     });
 });
@@ -57,37 +57,31 @@ $(function(){
 function dateSelect(){
 	$("#date").html($("#startDate").val()+" ~ "+$("#endDate").val());
 	$("#dateDiv button").removeClass("active");
-	ajax_browser(); // 获取浏览器分布数据
+	ajax_visitModule(); // 获取受访页面模块数据
 }
 // 图表自适应
 window.onresize = function(){
-	browserPieChart.resize();
-	browserBarChart.resize();
+	visitModulePieChart.resize();
+	visitModuleBarChart.resize();
 }
 
-// ajax请求浏览器分布数据
-function ajax_browser(){
+// ajax请求受访页面模块数据
+function ajax_visitModule(){
 	var startDate = $("#startDate").val();
 	var endDate = $("#endDate").val();
-	var browserIndex = $("#browserIndex").val(); // 指标
+	var visitModuleIndex = $("#visitModuleIndex").val(); // 指标
 	var param = {};
-	if(browserIndex == "browsers"){
-		param = {module:'API',method:'DevicesDetection.getBrowsers',idSite:idSite,period:'range',date:startDate+','+endDate,format:'json',token_auth:t,filter_sort_column:'nb_visits',filter_sort_order:'desc'};
-	}else if(browserIndex == "browsersVersions"){
-		param = {module:'API',method:'DevicesDetection.getBrowserVersions',idSite:idSite,period:'range',date:startDate+','+endDate,format:'json',token_auth:t,filter_sort_column:'nb_visits',filter_sort_order:'desc'};
-	}else if(browserIndex == "osFamilies"){
-		param = {module:'API',method:'DevicesDetection.getOsFamilies',idSite:idSite,period:'range',date:startDate+','+endDate,format:'json',token_auth:t,filter_sort_column:'nb_visits',filter_sort_order:'desc'};
-	}else if(browserIndex == "osVersions"){
-		param = {module:'API',method:'DevicesDetection.getOsVersions',idSite:idSite,period:'range',date:startDate+','+endDate,format:'json',token_auth:t,filter_sort_column:'nb_visits',filter_sort_order:'desc'};
-	}else if(browserIndex == "resolution"){
-		param = {module:'API',method:'Resolution.getResolution',idSite:idSite,period:'range',date:startDate+','+endDate,format:'json',token_auth:t,filter_sort_column:'nb_visits',filter_sort_order:'desc'};
+	if(visitModuleIndex == "grade"){
+		param = {module:'API',method:'Actions.getPageTitles',idSite:idSite,period:'range',date:startDate+','+endDate,format:'json',token_auth:t,flat:'0',filter_sort_column:'nb_hits',filter_sort_order:'desc'};
+	}else if(visitModuleIndex == "nograde"){
+		param = {module:'API',method:'Actions.getPageTitles',idSite:idSite,period:'range',date:startDate+','+endDate,format:'json',token_auth:t,flat:'1',filter_sort_column:'nb_hits',filter_sort_order:'desc'};
 	}
-	browserPieChart.showLoading();
-	browserBarChart.showLoading();
+	visitModulePieChart.showLoading();
+	visitModuleBarChart.showLoading();
 	ajax_jsonp(piwik_url,param,function(data){
 		data = eval(data);
-		browserData = data;
-		// console.info(browserData);
+		visitModuleData = data;
+		//console.info(visitModuleData);
 		anaPieBar(); // 加载图表
 		anaCsTable(); // 加载详情表格
 	});
@@ -95,7 +89,7 @@ function ajax_browser(){
 
 // 初始化饼图
 function init_pie(){
-	browserPieChart = echarts.init(document.getElementById('browserPie'));
+	visitModulePieChart = echarts.init(document.getElementById('visitModulePie'));
 	var option = {
 	    tooltip : {
 	        trigger: 'item',
@@ -103,8 +97,6 @@ function init_pie(){
 	    },
 	    legend: {
 	    		show : false,
-	        orient: 'vertical',
-	        left: 'left',
 	        data: []
 	    },
 	    series : [
@@ -112,9 +104,18 @@ function init_pie(){
 	            name: '访问',
 	            type: 'pie',
 	            radius : '55%',
-	            center: ['50%', '60%'],
+	            center: ['60%', '50%'],
 	            data:[],
 	            itemStyle: {
+	            		normal: {
+						label: {
+							show: true,
+							formatter: '{d}%'
+						},
+						labelLine: {
+							show: true
+						},
+					},
 	                emphasis: {
 	                    shadowBlur: 10,
 	                    shadowOffsetX: 0,
@@ -124,12 +125,12 @@ function init_pie(){
 	        }
 	    ]
 	};
-	browserPieChart.setOption(option);
+	visitModulePieChart.setOption(option);
 }
 
 // 初始化柱状图
 function init_bar(){
-	browserBarChart = echarts.init(document.getElementById('browserBar'));
+	visitModuleBarChart = echarts.init(document.getElementById('visitModuleBar'));
 	var option = { 
 	    tooltip : {
 	        trigger: 'axis',
@@ -138,10 +139,7 @@ function init_bar(){
 	        }
 	    },
 	    grid: {
-	        left: '3%',
-	        right: '4%',
-	        bottom: '3%',
-	        containLabel: true
+			y2 : 100
 	    },
 	    xAxis : [
 	        {
@@ -149,146 +147,122 @@ function init_bar(){
 	            data : [],
 	            axisTick: {
 	                alignWithLabel: true
-	            }
+	            },
+	            axisLabel:{  
+                     interval: 0,//横轴信息全部显示  
+                     rotate:-20,//-30度角倾斜显示  
+                }
 	        }
 	    ],
-	    yAxis : [
-	        {
-	            type : 'value'
-	        }
-	    ],
-	    series : [
-	        {
-	            name:'访问',
-	            type:'bar',
-	            barWidth: '60%',
-	            data:[],
-	            itemStyle: {
-					normal: {
-						color: function(params) {
-							var colorList = ['#c23531','#2f4554', '#61a0a8', '#d48265', '#91c7ae','#749f83',  '#ca8622', '#bda29a','#6e7074', '#546570', '#c4ccd3'];
-							return colorList[params.dataIndex]
-						},
-						label: {
-							show: false
+	    yAxis : [{type : 'value'}],
+	    series : [{
+		            name:'访问',
+		            type:'bar',
+		            barWidth: '60%',
+		            data:[],
+		            itemStyle: {
+						normal: {
+							color: function(params) {
+								var colorList = ['#c23531','#2f4554', '#61a0a8', '#d48265', '#91c7ae','#749f83',  '#ca8622', '#bda29a','#6e7074', '#546570', '#c4ccd3'];
+								return colorList[params.dataIndex]
+							},
+							label: {
+								show: false
+							}
 						}
 					}
-				}
-	        }
-	    ]
+		       }]
 	};
-	browserBarChart.setOption(option);
+	visitModuleBarChart.setOption(option);
 }
 
 // 解析图表数据
 function anaPieBar(){
-	// 如果超过10条记录，则只展示前10条
-	var bd = browserData;
-	if(bd.length > 10){
-		bd = bd.slice(0,9);
+	// 如果超过10条记录，则只展示前10条，余下展示其他
+	var vmd = visitModuleData;
+	if(vmd.length > 10){
+		vmd = vmd.slice(0,10);
+		var nh = 0;
+		for(var i = 10; i < visitModuleData.length; i++){
+			nh += visitModuleData[i].nb_hits;
+		}
+		vmd.push({label:'其他',nb_hits:nh});
 	}
+	console.info(vmd);
 	var xData = [];
 	var pieData = [];
 	var barData = [];
-	var browserIndex = $("#browserIndex").val(); // 指标
-	if(browserIndex == "browsers"){
-		name = "浏览器名称";
-	}else if(browserIndex == "browsersVersions"){
-		name = "浏览器版本";
-	}else if(browserIndex == "osFamilies"){
-		name = "操作系统名称";
-	}else if(browserIndex == "osVersions"){
-		name = "操作系统版本";
-	}else if(browserIndex == "resolution"){
-		name = "画面分辨率";
-	}
-	for(var k in bd){
-		var row = bd[k];
+	for(var k in vmd){
+		var row = vmd[k];
 		var label = row.label;
-		var nv = row.nb_visits;
-		xData.push(label);
-		pieData.push({value:nv,name:label});
-		barData.push(nv);
+		var nh = row.nb_hits;
+		xData.push(cutStr(label,30));
+		pieData.push({value:nh,name:cutStr(label,30)});
+		barData.push(nh);
 	}
 	var pieOption = {
 		legend: {
 	        data: xData
 	    },
 	    series : [{
-	            data: pieData,
+	        data: pieData,
 	    }]
 	}
-	browserPieChart.setOption(pieOption);
-	browserPieChart.hideLoading();
+	visitModulePieChart.setOption(pieOption);
+	visitModulePieChart.hideLoading();
 	var barOption = {
-		xAxis : [
-	        {
-	            data : xData,
-	        }
-	    ],
-	    series : [
-	        {
-	            data:barData
-	        }
-	    ]
+		xAxis : [{
+	       data : xData,
+	    }],
+	    series : [{
+	       data:barData
+	    }]
 	};
-	browserBarChart.setOption(barOption);
-	browserBarChart.hideLoading();
+	visitModuleBarChart.setOption(barOption);
+	visitModuleBarChart.hideLoading();
 }
 
 // 指标按钮点击事件
-function browser_btn(index){
-	$("#browserBtn button").removeClass("active");
+function visitModule_btn(index){
+	$("#visitModuleBtn button").removeClass("active");
 	$("#btn_"+index).addClass("active");
-	$("#browserIndex").val(index);
-	ajax_browser(); // 获取浏览器分布数据
+	$("#visitModuleIndex").val(index);
+	ajax_visitModule(); // 获取受访页面模块数据
 }
 
 // 指标详情表start
 // 解析数据并加载
 function anaCsTable(){
 	var csData = [];
-	var name = "";
-	var browserIndex = $("#browserIndex").val(); // 指标
-	if(browserIndex == "browsers"){
-		name = "浏览器名称";
-		
-	}else if(browserIndex == "browsersVersions"){
-		name = "浏览器版本";
-	}else if(browserIndex == "osFamilies"){
-		name = "操作系统名称";
-	}else if(browserIndex == "osVersions"){
-		name = "操作系统版本";
-	}else if(browserIndex == "resolution"){
-		name = "画面分辨率";
-	}
-	for(var k in browserData){
-		var row = browserData[k];
-		var label = row.label;
+	var visitModuleIndex = $("#visitModuleIndex").val(); // 指标
+	for(var k in visitModuleData){
+		var row = visitModuleData[k];
+		var label = "<span title='"+row.label+"'>"+cutStr(row.label,80)+"</span>";	
+		var nh = row.nb_hits;
 		var nv = row.nb_visits;
-		var na = row.nb_actions;
-		var ana = (na / nv).toFixed(1);
-		var atos = formatTime((row.sum_visit_length / nv).toFixed(0));
-		var br = (row.bounce_count / nv * 100).toFixed(0) + '%';
-		csData.push({label:label,nv:nv,na:na,ana:ana,atos:atos,br:br});
+		var atop = formatTime(row.avg_time_on_page);
+		var br = row.bounce_rate;
+		var er = row.exit_rate;
+		var atg = row.avg_time_generation;
+		csData.push({label:label,nh:nh,nv:nv,atop:atop,br:br,er:er,atg:atg});
 	}
-	initCsTable(csData,name);
+	initCsTable(csData);
 	
 }
 // 构造表格数据
-function initCsTable(csData,name){
+function initCsTable(csData){
 	var customHeader = "<thead>"
-						+"<tr><th rowspan='2'>"+name+"</th><th colspan='2'>网站基础指标</th><th colspan='3'>流量质量指标</th></tr>"
-						+"<tr>"
-							+"<th title='访客第一次访问你的网站或者距离上次访问时间超过30分钟，会被统计为新的访问。'>访问</th>"
-							+"<th title='访客执行的活动次数。活动包括查看页面、站内搜索、下载或者离站链接。'>活动</th>"
-							+"<th title='访问期间的平均活动次数 (包括查看页面、站内搜索、下载或离站链接)。'>平均活动次数</th>"
-							+"<th title='平均停留时间。'>网站平均停留时间</th>"
-							+"<th title='只查看单个页面的百分比，即访客直接从入口页面离开网站。'>跳出率</th>"
+						+"<tr><th rowspan='2'>受访页面模块</th><th colspan='2'>网站基础指标</th><th colspan='4'>流量质量指标</th></tr>"
+						+"<tr><th title='页面被查看的次数。用户多次打开同一页面，浏览量值累计。'>浏览量</th>"
+						+"<th title='浏览了该页面的访问次数。如果一次访问中多次浏览同一页面，只统计一次。'>唯一页面浏览量</th>"
+						+"<th title='访客在一次访问中，平均打开网站的时长。'>平均访问时长</th>"
+						+"<th title='只查看单个页面的百分比，即访客直接从入口页面离开网站。'>跳出率</th>"
+						+"<th title='查看该页面后离开网站的百分比。'>退出率</th>"
+						+"<th title='生成页面的平均时间。'>平均生成时长(秒)</th>"
 						+"</tr></thead>";
 	var cs = new table({
 		"tableId": "cs_table", //必须
-		"headers": ["日期", "浏览量(PV)", "访客数(UV)", "访问", "用户数","跳出率","平均访问时长"], //必须
+		"headers": ["受访页面模块", "浏览量", "唯一页面浏览量", "平均访问时长", "跳出率","退出率","平均生成时长(秒)"], //必须
 		"customHeader" : customHeader, // 自定义表头，若定义则覆盖默认表头
 		"data": csData, //必须
 		"displayNum": 15, //必须  默认 10
