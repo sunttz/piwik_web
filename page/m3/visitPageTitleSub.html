@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>子模块</title>
+		<script type="text/javascript">
+	    		var idSite = "";
+	    		var t = "";
+	    </script>
+	    <script type="text/javascript" src="../../common/js/common1.js"></script>
+	    <style type="text/css">
+	    		.main {border-left: none;border-right: none;background-color: #ececec;height:'100%';padding-bottom: 5px;}
+	    		.content-header-wrapper {width: auto;left: 0px;background-color: #fff;height: 55px;border:1px solid #E8E8E8}
+	    		.main-content {height: '100%';margin: 15px;background-color: #fff;}
+	    		.table-grid-item {margin-top: 1px; background-color: #fff; height: 390px;}
+	    </style>
+	</head>
+	<body>
+		<div class="main">
+			<div id="content-header-wrapper" class="content-header-wrapper">
+				<div id="content-header" style="padding: 10px 10px 0 10px;">
+					<div style="line-height: 18px;">
+						<div style="float: left;"><button id="returnHp" type="button" class="btn btn-link btn-sm"><span class="glyphicon glyphicon-share-alt"></span> 返回模块首页</button></div>
+						<div style="float: left;margin-top: 5px;font-size: 14px;font-weight: bold;">【<span id="subModualTitle"></span>】子模块</div>
+						<div style="float: left;margin:4px 0 0 5px;font-size: 14px;">( <span id="date"></span> )</div>
+					</div>
+				</div>
+				<div style="clear: both;"></div>
+			</div>
+			<div class="main-content">
+				<div class="first-row">
+					<div class="table-grid-item">
+						<div style="float: left;width: 35%;">
+							<div class="table-grid-item">
+								<div id="visitModulePie" style="height:365px;"></div>
+							</div>
+						</div>
+						<div style="float: right;width: 65%;">
+							<div class="table-grid-item">
+								<div id="visitModuleBar" style="height:365px;"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<table id="cs_table" class="datatable">
+				</table>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../common/js/page/visitPageTitleSub.js"></script>
+</html>
