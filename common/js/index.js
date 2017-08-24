@@ -400,21 +400,21 @@ $(function(){
 					{"id":"13","name":"流量分析","parentId":"1","url":"","icon":"","order":"1","isHeader":"0","childMenus":[
 						{"id":"14","name":"趋势分析","parentId":"13","url":"m1/trend.html","icon":"&#xe602;","order":"1","isHeader":"0","childMenus":""}
 					]},
-					{"id":"23","name":"来源分析","parentId":"1","url":"","icon":"","order":"1","isHeader":"0","childMenus":[
-						{"id":"24","name":"来源总表","parentId":"23","url":"home3.html","icon":"&#xe602;","order":"1","isHeader":"0","childMenus":""}
-					]},
+//					{"id":"23","name":"来源分析","parentId":"1","url":"","icon":"","order":"1","isHeader":"0","childMenus":[
+//						{"id":"24","name":"来源总表","parentId":"23","url":"home3.html","icon":"&#xe602;","order":"1","isHeader":"0","childMenus":""}
+//					]},
 					{"id":"33","name":"访问分析","parentId":"1","url":"","icon":"","order":"1","isHeader":"0","childMenus":[
 						{"id":"34","name":"受访页面","parentId":"33","url":"m3/visitPage.html","icon":"&#xe602;","order":"1","isHeader":"0","childMenus":""},
 						{"id":"35","name":"受访页面模块","parentId":"33","url":"m3/visitPageTitle.html","icon":"&#xe602;","order":"2","isHeader":"0","childMenus":""},
 						{"id":"36","name":"入口页面","parentId":"33","url":"m3/entryPage.html","icon":"&#xe602;","order":"3","isHeader":"0","childMenus":""},
 						{"id":"37","name":"页面上下游","parentId":"33","url":"home3.html","icon":"&#xe602;","order":"4","isHeader":"0","childMenus":""},
-						{"id":"38","name":"事件分析","parentId":"33","url":"home3.html","icon":"&#xe602;","order":"5","isHeader":"0","childMenus":""}
+						//{"id":"38","name":"事件分析","parentId":"33","url":"home3.html","icon":"&#xe602;","order":"5","isHeader":"0","childMenus":""}
 					]},
 					{"id":"43","name":"访客分析","parentId":"1","url":"","icon":"","order":"1","isHeader":"0","childMenus":[
 						{"id":"44","name":"地域分布","parentId":"43","url":"m4/district.html","icon":"&#xe602;","order":"1","isHeader":"0","childMenus":""},
-						{"id":"45","name":"部门分布","parentId":"43","url":"home3.html","icon":"&#xe602;","order":"2","isHeader":"0","childMenus":""},
+						{"id":"45","name":"用户分布","parentId":"43","url":"home3.html","icon":"&#xe602;","order":"2","isHeader":"0","childMenus":""},
 						{"id":"46","name":"浏览器分布","parentId":"43","url":"m4/browerDist.html","icon":"&#xe602;","order":"3","isHeader":"0","childMenus":""},
-						{"id":"47","name":"自定义变量","parentId":"43","url":"a.html","icon":"&#xe602;","order":"4","isHeader":"0","childMenus":""}
+						//{"id":"47","name":"自定义变量","parentId":"43","url":"a.html","icon":"&#xe602;","order":"4","isHeader":"0","childMenus":""}
 					]}
 				]}
 //				{"id":"2","name":"框架案例","parentId":"0","url":"","icon":"","order":"2","isHeader":"1","childMenus":[

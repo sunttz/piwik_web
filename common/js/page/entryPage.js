@@ -103,12 +103,13 @@ function initLine(){
 	    legend: {
 	        data:[],
 	        bottom : '0%',
-	        selected: {}  
+	        selected: {}
 	    },
 	    grid: {
-	        left: '3%',
-	        right: '4%',
+	        left: '5%',
+	        right: '5%',
 	        top: '3%',
+	        bottom : '20%',
 	        containLabel: true
 	    },
 	    xAxis: {
@@ -240,9 +241,9 @@ function refreshPieLine(){
 		}
 		series.push({name:url,type:'line',data:seriesData});
 	}
-	// 超过4个的url趋势图隐藏
-	if(legendData.length > 4){
-		for(var i=4;i<legendData.length;i++){
+	// 超过3个的url趋势图隐藏
+	if(legendData.length > 3){
+		for(var i=3;i<legendData.length;i++){
 			legendSelected[legendData[i]] = false;
 		}
 	}
