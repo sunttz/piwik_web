@@ -104,7 +104,7 @@ function init_pie(){
 	            name: '访问',
 	            type: 'pie',
 	            radius : '55%',
-	            center: ['60%', '50%'],
+	            center: ['55%', '50%'],
 	            data:[],
 	            itemStyle: {
 	            		normal: {

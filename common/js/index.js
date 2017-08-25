@@ -412,7 +412,7 @@ $(function(){
 					]},
 					{"id":"43","name":"访客分析","parentId":"1","url":"","icon":"","order":"1","isHeader":"0","childMenus":[
 						{"id":"44","name":"地域分布","parentId":"43","url":"m4/district.html","icon":"&#xe602;","order":"1","isHeader":"0","childMenus":""},
-						{"id":"45","name":"用户分布","parentId":"43","url":"home3.html","icon":"&#xe602;","order":"2","isHeader":"0","childMenus":""},
+						{"id":"45","name":"用户分析","parentId":"43","url":"m4/userDist.html","icon":"&#xe602;","order":"2","isHeader":"0","childMenus":""},
 						{"id":"46","name":"浏览器分布","parentId":"43","url":"m4/browerDist.html","icon":"&#xe602;","order":"3","isHeader":"0","childMenus":""},
 						//{"id":"47","name":"自定义变量","parentId":"43","url":"a.html","icon":"&#xe602;","order":"4","isHeader":"0","childMenus":""}
 					]}

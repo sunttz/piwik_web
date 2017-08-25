@@ -131,7 +131,7 @@ function init_pie(){
 // 初始化柱状图
 function init_bar(){
 	browserBarChart = echarts.init(document.getElementById('browserBar'));
-	var option = { 
+	var option = {
 	    tooltip : {
 	        trigger: 'axis',
 	        axisPointer : {            // 坐标轴指示器，坐标轴触发有效
