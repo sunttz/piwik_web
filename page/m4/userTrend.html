@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta charset="UTF-8">
-		<title>趋势分析</title>
+		<title>用户趋势分析</title>
 		<script type="text/javascript">
 	    		var idSite = "";
 	    		var t = "";
@@ -19,8 +19,11 @@
 			<div id="content-header-wrapper" class="content-header-wrapper">
 				<div id="content-header" style="padding: 10px 10px 0 10px;">
 					<div style="line-height: 18px;">
-						<div style="float: left;padding: 0;font-size: 14px;font-weight: bold;">趋势分析</div>
-						<div style="float: left;margin-left: 5px;font-size: 14px;">( <span id="date"></span> )</div>
+						<div style="float: left;">
+							<button type="button" class="btn btn-link btn-sm" onclick="javascript:window.history.back();"><span class="glyphicon glyphicon-share-alt"></span> 返回上一页</button>
+						</div>
+						<div style="float: left;margin-top: 5px;font-size: 14px;font-weight: bold;">【<span id="userLabel"></span>】用户趋势分析</div>
+						<div style="float: left;margin:4px 0 0 5px;font-size: 14px;">( <span id="date"></span> )</div>
 					</div>
 				</div>
 				<div style="clear: both;"></div>
@@ -39,43 +42,27 @@
 				                <input type="text" class="form-control" name="endDate" id="endDate" style="display: block;float: left;overflow: hidden;width:110px;height: 30px;" onclick="WdatePicker({doubleCalendar:false,minDate:'#F{$dp.$D(\'startDate\')}',maxDate:'%y-%M-%d',dateFmt:'yyyy-MM-dd',autoPickDate:true,onpicked:dateSelect});" />
 			                 </div>
 						</div>
-						
 					</div>
 				</div>
 			</div>
 			<div class="main-content">
-				<div id="summary" style="padding: 10px 0;border-bottom:1px solid #E8E8E8;">
-					<table class="table" style="margin-bottom: 0px;border-right:1px solid #E8E8E8" frame="void" rules="cols">
-						<tbody>
-							<tr >
-								<td width="25%"><div style="color: #777;">浏览量(PV) <span data-toggle="tooltip" data-placement="auto" title="页面被查看的次数。用户多次打开同一页面，浏览量值累计。" class="glyphicon glyphicon-question-sign" style="color: rgb(206, 207, 203);"></span></div><h4 id="d_pv"><h4></td>
-								<!--<td width="16.7%"><div style="color: #777;">访客数(UV) <span data-toggle="tooltip" data-placement="auto" title="网站独立访客数量。即使一天之内多次访问网站也只会被统计一次。" class="glyphicon glyphicon-question-sign" style="color: rgb(206, 207, 203);"></span></div><h4 id="d_uv"><h4></td>-->
-								<td width="25%"><div style="color: #777;">访问 <span data-toggle="tooltip" data-placement="auto" title="访客第一次访问你的网站或者距离上次访问时间超过30分钟，会被统计为新的访问。" class="glyphicon glyphicon-question-sign" style="color: rgb(206, 207, 203);"></span></div><h4 id="d_visit"><h4></td>
-								<!--<td width="16.7%"><div style="color: #777;">用户数 <span data-toggle="tooltip" data-placement="auto" title="登录你的网站的用户数量。它是具有用户ID组唯一活跃用户的数量。" class="glyphicon glyphicon-question-sign" style="color: rgb(206, 207, 203);"></span></div><h4 id="d_user"><h4></td>-->
-								<td width="25%"><div style="color: #777;">跳出率 <span data-toggle="tooltip" data-placement="auto" title="只查看单个页面的百分比，即访客直接从入口页面离开网站。" class="glyphicon glyphicon-question-sign" style="color: rgb(206, 207, 203);"></span></div><h4 id="d_br"><h4></td>
-								<td width="25%"><div style="color: #777;">平均访问时长 <span data-toggle="tooltip" data-placement="auto" title="访客在一次访问中，平均打开网站的时长。" class="glyphicon glyphicon-question-sign" style="color: rgb(206, 207, 203);"></span></div><h4 id="d_at"><h4></td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
 				<div id="btn_group" class="btn-group" style="padding: 5px 0 0 30px;">
 					<div class="btn-group">
 						<button id="btn_other" type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
-							<span id="visitTendency_btn_text">指标：浏览量(PV)</span>
+							<span id="userTrend_btn_text">指标：访问</span>
 							<span class="caret"></span>
 						</button>
 						<ul class="dropdown-menu">
-							<li><a id="btn_pv" href="javascript:visitTendency_btn('pv');">浏览量(PV)</a></li>
-							<li><a id="btn_uv" href="javascript:visitTendency_btn('uv');">访客数(UV)</a></li>
-							<li><a id="btn_visit" href="javascript:visitTendency_btn('visit');">访问</a></li>
-							<li><a id="btn_user" href="javascript:visitTendency_btn('user');">用户数</a></li>
-							<li><a id="btn_br" href="javascript:visitTendency_btn('br');">跳出率</a></li>
-							<li><a id="btn_at" href="javascript:visitTendency_btn('at');">平均访问时长</a></li>
+							<li><a id="btn_nv" href="javascript:userTrend_btn('nv');">访问</a></li>
+							<li><a id="btn_na" href="javascript:userTrend_btn('na');">活动</a></li>
+							<li><a id="btn_ana" href="javascript:userTrend_btn('ana');">平均活动次数</a></li>
+							<li><a id="btn_atos" href="javascript:userTrend_btn('atos');">网站平均停留时间</a></li>
+							<li><a id="btn_br" href="javascript:userTrend_btn('br');">跳出率</a></li>
 						</ul>
 				  </div>
-				  <input type="hidden" id="visitTendencyIndex" value="pv"/>
+				  <input type="hidden" id="userTrendIndex" value="nv"/>
 				</div>
-				<div id="visitTrend" style="height: 500px;"></div>
+				<div id="userTrend" style="height: 500px;"></div>
 				<table id="cs_table" class="datatable">
 				</table>
 			</div>

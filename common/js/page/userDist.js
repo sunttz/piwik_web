@@ -134,7 +134,7 @@ function anaCsTable(){
 	for(var k in userData){
 		var v = userData[k];
 		var label = v.label;
-		var href = "<a href='userTrend.html?siteId="+idSite+"&t="+t+"' title='查看详情'><span class='glyphicon glyphicon-chevron-right'></span></a>";
+		var href = "<a href='userTrend.html?siteId="+idSite+"&t="+t+"&label="+label+"' title='查看详情'><span class='glyphicon glyphicon-chevron-right'></span></a>";
 		var nv = v.nb_visits;
 		var na = v.nb_actions;
 		var ana = (na / nv).toFixed(1);
