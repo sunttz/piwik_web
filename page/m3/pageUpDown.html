@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>页面上下游</title>
+		<link type="text/css" rel="stylesheet" href="../../common/lib/jsmind/style/jsmind.css" />
+		<script type="text/javascript" src="../../common/lib/jsmind/js/jsmind.js"></script>
+		<script type="text/javascript" src="../../common/lib/jsmind/js/jsmind.draggable.js"></script>
+	</head>
+	<body>
+		<div id="jsmind_container" style="height: 750px;"></div>
+		<script type="text/javascript">
+			var mind = {
+			    /* 元数据，定义思维导图的名称、作者、版本等信息 */
+			    "meta":{
+			        "name":"example",
+			        "author":"hizzgdev@163.com",
+			        "version":"0.2"
+			    },
+			    /* 数据格式声明 */
+			    "format":"node_array",
+			    /* 数据内容 */
+			    "data":[
+			        {"id":"root", "isroot":true, "topic":"jsMind"},
+			
+			        {"id":"easy", "parentid":"root", "topic":"Easy", "direction":"left"},
+			        {"id":"easy1", "parentid":"easy", "topic":"<table><tr><td title='gsagds'>张三<td><td onclick='javascript:alert(\"test\")'>李四<td></tr><tr><td colspan='2'>王五<td></tr></table>"},
+			        {"id":"easy2", "parentid":"easy", "topic":"Easy to edit"},
+			        {"id":"easy3", "parentid":"easy", "topic":"Easy to store"},
+			        {"id":"easy4", "parentid":"easy", "topic":"Easy to embed"},
+			        {"id":"easy5", "parentid":"easy", "topic":"Easy to show"},
+			        {"id":"easy6", "parentid":"easy", "topic":"Easy to edit"},
+			        {"id":"easy7", "parentid":"easy", "topic":"Easy to store"},
+			        {"id":"easy8", "parentid":"easy", "topic":"Easy to embed"},
+			        {"id":"easy9", "parentid":"easy", "topic":"Easy to show"},
+			        {"id":"easy10", "parentid":"easy", "topic":"Easy to edit"},
+			        {"id":"easy11", "parentid":"easy", "topic":"Easy to store"},
+			        {"id":"easy12", "parentid":"easy", "topic":"Easy to embed"},
+			        {"id":"easy13", "parentid":"easy", "topic":"Easy to show"},
+			        {"id":"easy14", "parentid":"easy", "topic":"Easy to edit"},
+			        {"id":"easy15", "parentid":"easy", "topic":"Easy to store"},
+			        {"id":"easy16", "parentid":"easy", "topic":"Easy to embed"},
+			
+			        {"id":"open", "parentid":"root", "topic":"Open Source", "expanded":false, "direction":"right"},
+			        {"id":"open1", "parentid":"open", "topic":"on GitHub"},
+			        {"id":"open2", "parentid":"open", "topic":"BSD License"},
+			
+			        {"id":"powerful", "parentid":"root", "topic":"Powerful", "direction":"right"},
+			        {"id":"powerful1", "parentid":"powerful", "topic":"Base on Javascript"},
+			        {"id":"powerful2", "parentid":"powerful", "topic":"Base on HTML5"},
+			        {"id":"powerful3", "parentid":"powerful", "topic":"Depends on you"},
+			    ]
+			};
+		    var options = {                   // options 将在下一章中详细介绍
+		        container:'jsmind_container', // [必选] 容器的ID，或者为容器的对象
+		        editable:false,                // [可选] 是否启用编辑
+		        theme:'info',                // [可选] 主题
+		        support_html : true,
+		        view:{
+			       hmargin:30,        // 思维导图距容器外框的最小水平距离
+			       vmargin:50,         // 思维导图距容器外框的最小垂直距离
+			       line_width:2,       // 思维导图线条的粗细
+			       line_color:'#555'   // 思维导图线条的颜色
+			   },
+		    };
+		    var jm = new jsMind(options);
+		    jm.show(mind);
+		</script>
+	</body>
+</html>
