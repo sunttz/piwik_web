@@ -68,7 +68,8 @@ function ajaxCsTable(){
 		data = eval(data);
 		for(var k in data){
 			var v = data[k];
-			csData.push({url:'<a href="'+v.url+'" target="_blank">'+cutStr(v.url,100)+'</a>',href:'<a href="historyTrend.html?siteId='+idSite+'&t='+t+'&href='+v.url+'" title="查看历史趋势"><span class="glyphicon glyphicon-chevron-right"></span></a>',pv:v.nb_hits,uv:v.nb_visits,atop:formatTime(v.avg_time_on_page),br:v.bounce_rate,er:v.exit_rate,atg:v.avg_time_generation});
+			var link = '<a href="historyTrend.html?siteId='+idSite+'&t='+t+'&href='+v.url+'" title="查看历史趋势"><span class="glyphicon glyphicon-chevron-right"></span></a>&nbsp;&nbsp;&nbsp;<a href="pageUpDown.html?siteId='+idSite+'&t='+t+'&startDate='+startDate+'&endDate='+endDate+'&href='+v.url+'" title="查看页面上下游"><span class="glyphicon glyphicon-random"></span></a>';
+			csData.push({url:'<a href="'+v.url+'" target="_blank">'+cutStr(v.url,100)+'</a>',link:link,pv:v.nb_hits,uv:v.nb_visits,atop:formatTime(v.avg_time_on_page),br:v.bounce_rate,er:v.exit_rate,atg:v.avg_time_generation});
 		}
 		initCsTable(csData);
 	});
