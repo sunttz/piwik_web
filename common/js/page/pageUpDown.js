@@ -6,6 +6,10 @@ $(function(){
 	endDate = getQueryString("endDate");
 	$("#date").html(startDate+" ~ "+endDate);
 	$("#trendUrl").html(cutStr(url,100));
+	// 返回受访页面
+	$("#returnVisitPage").click(function(){
+		window.location.href='visitPage.html?siteId='+idSite+"&t="+t+"&startDate="+startDate+"&endDate="+endDate;
+	});
     ajaxMind();
 });		
 

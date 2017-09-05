@@ -1,10 +1,20 @@
 $(function(){
 	idSite = getQueryString("siteId");
 	t = getQueryString("t");
-	//默认最近7天
-	$("#date").html(getDateStr(-6)+" ~ "+getDateStr(0));
-    	$("#startDate").val(getDateStr(-6));
-	$("#endDate").val(getDateStr(0));
+	sd = getQueryString("startDate");
+	ed = getQueryString("endDate");
+	
+	//有开始结束时间则以有的为准，否则默认最近7天
+	if(sd != null && ed != null){
+		$("#dateDiv button").removeClass("active");
+		$("#date").html(sd+" ~ "+ed);
+		$("#startDate").val(sd);
+		$("#endDate").val(ed);
+	}else{
+		$("#date").html(getDateStr(-6)+" ~ "+getDateStr(0));
+	    	$("#startDate").val(getDateStr(-6));
+		$("#endDate").val(getDateStr(0));
+	}
 	// 加载访客数据表
 	ajaxCsTable();
 	
