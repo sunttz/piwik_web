@@ -234,6 +234,8 @@ function visitModule_btn(index){
 function anaCsTable(){
 	var csData = [];
 	var visitModuleIndex = $("#visitModuleIndex").val(); // 指标
+	var sd = $("#startDate").val();
+	var ed = $("#endDate").val();
 	if(visitModuleIndex == "grade"){
 		for(var k in visitModuleData){
 			var row = visitModuleData[k];
@@ -242,9 +244,7 @@ function anaCsTable(){
 			var plus = "";
 			if(row.hasOwnProperty("idsubdatatable")){
 				var sub = row.idsubdatatable;
-				var sd = $("#startDate").val();
-				var ed = $("#endDate").val();
-				plus = "<a href='visitPageTitleSub.html?idSubtable="+sub+"&sd="+sd+"&ed="+ed+"&siteId="+idSite+"&t="+t+"&label="+escape(cutStr(row.label,80))+"' title='查看详情'><span class='glyphicon glyphicon-chevron-right'></span></a>";
+				plus = "<a href='visitPageTitleSub.html?idSubtable="+sub+"&sd="+sd+"&ed="+ed+"&siteId="+idSite+"&t="+t+"&label="+encodeURIComponent(row.label)+"' title='查看详情'><span class='glyphicon glyphicon-chevron-right'></span></a>";
 			}
 			var nh = row.nb_hits;
 			var nv = row.nb_visits;
@@ -258,13 +258,15 @@ function anaCsTable(){
 		for(var k in visitModuleData){
 			var row = visitModuleData[k];
 			var label = "<span title='"+row.label+"'>"+cutStr(row.label,80)+"</span>";
+			var href = "moduleUpDown.html?siteId="+idSite+"&t="+t+"&startDate="+sd+"&endDate="+ed+"&module="+encodeURIComponent(row.label);
+			var plus = "<a href='"+href+"' title='查看模块上下游'><span class='glyphicon glyphicon-random'></span></a>";
 			var nh = row.nb_hits;
 			var nv = row.nb_visits;
 			var atop = formatTime(row.avg_time_on_page);
 			var br = row.bounce_rate;
 			var er = row.exit_rate;
 			var atg = row.avg_time_generation;
-			csData.push({label:label,nh:nh,nv:nv,atop:atop,br:br,er:er,atg:atg});
+			csData.push({label:label,plus:plus,nh:nh,nv:nv,atop:atop,br:br,er:er,atg:atg});
 		}
 	}
 	initCsTable(csData);
@@ -274,7 +276,7 @@ function initCsTable(csData){
 	var visitModuleIndex = $("#visitModuleIndex").val(); // 指标
 	var customHeader = "";
 	var headers = [];
-	if(visitModuleIndex == "grade"){
+	//if(visitModuleIndex == "grade"){
 		customHeader = "<thead>"
 						+"<tr><th rowspan='2' colspan='2'>受访页面模块</th><th colspan='2'>网站基础指标</th><th colspan='4'>流量质量指标</th></tr>"
 						+"<tr><th title='页面被查看的次数。用户多次打开同一页面，浏览量值累计。'>浏览量</th>"
@@ -285,18 +287,18 @@ function initCsTable(csData){
 						+"<th title='生成页面的平均时间。'>平均生成时长(秒)</th>"
 						+"</tr></thead>";
 		headers = ["受访页面模块", "", "浏览量", "唯一页面浏览量", "平均访问时长", "跳出率","退出率","平均生成时长(秒)"];
-	}else if(visitModuleIndex == "nograde"){
-		customHeader = "<thead>"
-						+"<tr><th rowspan='2'>受访页面模块</th><th colspan='2'>网站基础指标</th><th colspan='4'>流量质量指标</th></tr>"
-						+"<tr><th title='页面被查看的次数。用户多次打开同一页面，浏览量值累计。'>浏览量</th>"
-						+"<th title='浏览了该页面的访问次数。如果一次访问中多次浏览同一页面，只统计一次。'>唯一页面浏览量</th>"
-						+"<th title='访客在一次访问中，平均打开网站的时长。'>平均访问时长</th>"
-						+"<th title='只查看单个页面的百分比，即访客直接从入口页面离开网站。'>跳出率</th>"
-						+"<th title='查看该页面后离开网站的百分比。'>退出率</th>"
-						+"<th title='生成页面的平均时间。'>平均生成时长(秒)</th>"
-						+"</tr></thead>";
-		headers = ["受访页面模块", "浏览量", "唯一页面浏览量", "平均访问时长", "跳出率","退出率","平均生成时长(秒)"];
-	}
+//	}else if(visitModuleIndex == "nograde"){
+//		customHeader = "<thead>"
+//						+"<tr><th rowspan='2'>受访页面模块</th><th colspan='2'>网站基础指标</th><th colspan='4'>流量质量指标</th></tr>"
+//						+"<tr><th title='页面被查看的次数。用户多次打开同一页面，浏览量值累计。'>浏览量</th>"
+//						+"<th title='浏览了该页面的访问次数。如果一次访问中多次浏览同一页面，只统计一次。'>唯一页面浏览量</th>"
+//						+"<th title='访客在一次访问中，平均打开网站的时长。'>平均访问时长</th>"
+//						+"<th title='只查看单个页面的百分比，即访客直接从入口页面离开网站。'>跳出率</th>"
+//						+"<th title='查看该页面后离开网站的百分比。'>退出率</th>"
+//						+"<th title='生成页面的平均时间。'>平均生成时长(秒)</th>"
+//						+"</tr></thead>";
+//		headers = ["受访页面模块", "浏览量", "唯一页面浏览量", "平均访问时长", "跳出率","退出率","平均生成时长(秒)"];
+//	}
 	
 	var cs = new table({
 		"tableId": "cs_table", //必须

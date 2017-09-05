@@ -2,12 +2,12 @@ var visitModuleData = null; // 受访页面模块原始数据
 $(function(){
 	idSite = getQueryString("siteId");
 	t = getQueryString("t");
-	label = unescape(getQueryString("label"));
+	label = decodeURIComponent(getQueryString("label"));
 	sd = getQueryString("sd");
 	ed = getQueryString("ed");
 	idSubtable = getQueryString("idSubtable");
 	// 设置默认
-	$("#subModualTitle").html(label); 
+	$("#subModualTitle").html(cutStr(label,80)); 
 	$("#returnHp").bind("click",function(){
 		window.location.href = "visitPageTitle.html?siteId="+idSite+"&t="+t;
 	});
@@ -36,7 +36,7 @@ function ajax_visitModule(){
 	ajax_jsonp(piwik_url,param,function(data){
 		data = eval(data);
 		visitModuleData = data;
-		//console.info(visitModuleData);
+		console.info(visitModuleData);
 		anaPieBar(); // 加载图表
 		anaCsTable(); // 加载详情表格
 	});
@@ -182,12 +182,16 @@ function anaCsTable(){
 	var csData = [];
 	for(var k in visitModuleData){
 		var row = visitModuleData[k];
-		var label = "<span title='"+row.label+"'>"+cutStr(row.label,80)+"</span>";
+		var labelFormat = "<span title='"+row.label+"'>"+cutStr(row.label,80)+"</span>";
 		//  如果有子模块展示查看详情按钮
 		var plus = "";
+		var moduleName = label + "/" + $.trim(row.label);
 		if(row.hasOwnProperty("idsubdatatable")){
 			var sub = row.idsubdatatable;
-			plus = "<a href='visitPageTitleSub.html?idSubtable="+sub+"&sd="+sd+"&ed="+ed+"&siteId="+idSite+"&t="+t+"&label="+escape(cutStr(row.label,80))+"' title='查看详情'><span class='glyphicon glyphicon-chevron-right'></span></a>";
+			plus = "<a href='visitPageTitleSub.html?idSubtable="+sub+"&sd="+sd+"&ed="+ed+"&siteId="+idSite+"&t="+t+"&label="+encodeURIComponent(moduleName)+"' title='查看详情'><span class='glyphicon glyphicon-chevron-right'></span></a>";
+		}else{
+			var href = "moduleUpDown.html?siteId="+idSite+"&t="+t+"&startDate="+sd+"&endDate="+ed+"&module="+encodeURIComponent(moduleName);
+			plus = "<a href='"+href+"' title='查看模块上下游'><span class='glyphicon glyphicon-random'></span></a>";
 		}
 		var nh = row.nb_hits;
 		var nv = row.nb_visits;
@@ -195,7 +199,7 @@ function anaCsTable(){
 		var br = row.bounce_rate;
 		var er = row.exit_rate;
 		var atg = row.avg_time_generation;
-		csData.push({label:label,plus:plus,nh:nh,nv:nv,atop:atop,br:br,er:er,atg:atg});
+		csData.push({label:labelFormat,plus:plus,nh:nh,nv:nv,atop:atop,br:br,er:er,atg:atg});
 	}
 	initCsTable(csData);
 }

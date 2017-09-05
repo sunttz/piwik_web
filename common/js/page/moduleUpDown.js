@@ -1,21 +1,24 @@
 $(function(){
 	idSite = getQueryString("siteId");
 	t = getQueryString("t");
-	url = getQueryString("href");
+	module = decodeURIComponent(getQueryString("module"));
 	startDate = getQueryString("startDate");
 	endDate = getQueryString("endDate");
 	$("#date").html(startDate+" ~ "+endDate);
-	$("#trendUrl").html(cutStr(url,100));
+	$("#trendUrl").html(cutStr(module,80));
     ajaxMind();
 });		
 
 // 请求页面上下游数据
 function ajaxMind(){
-	var param = {date:startDate+','+endDate,actionType:'url',actionName:encodeURI(url),format:'json',module:'API',method:'Transitions.getTransitionsForAction',filter_limit:-1,idSite:idSite,period:'range',token_auth:t};
+	var param = {date:startDate+','+endDate,actionType:'title',actionName:module,format:'json',module:'API',method:'Transitions.getTransitionsForAction',filter_limit:-1,idSite:idSite,period:'range',token_auth:t};
+	//console.info(param);
 	ajax_jsonp(piwik_url,param,function(data){
+		//{result: "error", message: "NoDataForAction"}
 		data = eval(data);
+		//console.info(data);
 		if(data.hasOwnProperty("result") && data.result == "error"){
-			$("#jsmind_container").html("<br/><p>&nbsp;&nbsp;本页面在"+startDate+"~"+endDate+"期间没有被访问过或者不正确</p>");
+			$("#jsmind_container").html("<br/><p>&nbsp;&nbsp;本模块在"+startDate+"~"+endDate+"期间没有被访问过或者不正确</p>");
 		}else{
 			anaMind(data);
 		}
@@ -27,7 +30,7 @@ function anaMind(pageUpDownData){
 	var mind = {
 	    /* 元数据，定义思维导图的名称、作者、版本等信息 */
 	    "meta":{
-	        "name":"pageUpDown-tree",
+	        "name":"moduleUpDown-tree",
 	        "author":"pud",
 	        "version":"0.1"
 	    },
@@ -57,7 +60,7 @@ function anaMind(pageUpDownData){
 		}
 		for(var i in previousPagesData){
 			var row = previousPagesData[i];
-			var label = row.label;
+			var label = decodeURIComponent(row.label);
 			var referrals = row.referrals;
 			var prop = (referrals/previousPagesTotal*100).toFixed(0);
 			topic = '<span title="'+label+'">'+label+'</span><br/><font size=2>'+referrals+' 次来自站内页面  占'+prop+'%</font>';
@@ -73,7 +76,7 @@ function anaMind(pageUpDownData){
 		children = [];
 		for(var i in details){
 			var row = details[i];
-			var label = row.label;
+			var label = decodeURIComponent(row.label);
 			var referrals = row.referrals;
 			var prop = (referrals/websiteTotal*100).toFixed(0);
 			topic = '<span title="'+label+'">'+label+'</span><br/><font size=2>'+referrals+' 次来自网站  占'+prop+'%</font>';
@@ -96,7 +99,7 @@ function anaMind(pageUpDownData){
 		}
 		for(var i in followingPagesData){
 			var row = followingPagesData[i];
-			var label = row.label;
+			var label = decodeURIComponent(row.label);
 			var referrals = row.referrals;
 			var prop = (referrals/followingPagesTotal*100).toFixed(0);
 			topic = '<span title="'+label+'">'+label+'</span><br/><font size=2>'+referrals+' 次转向站内页面  占'+prop+'%</font>';
@@ -114,7 +117,7 @@ function anaMind(pageUpDownData){
 		}
 		for(var i in outlinksData){
 			var row = outlinksData[i];
-			var label = row.label;
+			var label = decodeURIComponent(row.label);
 			var referrals = row.referrals;
 			var prop = (referrals/outlinksTotal*100).toFixed(0);
 			topic = '<span title="'+label+'">'+label+'</span><br/><font size=2>'+referrals+' 次转向外部链接  占'+prop+'%</font>';
@@ -130,7 +133,7 @@ function anaMind(pageUpDownData){
 	// 组装
 	var pv = pageUpDownData['pageMetrics'].pageviews; // 浏览量
 	var loops = pageUpDownData['pageMetrics'].loops; // 刷新次数
-	topic = '<font size=3>'+url+'<br/>&nbsp;&nbsp;'+pv+' 浏览量<hr style="margin:5px 0 5px 0"/>'
+	topic = '<font size=3>'+module+'<br/>&nbsp;&nbsp;'+pv+' 浏览量<hr style="margin:5px 0 5px 0"/>'
 			+'入口流量<br/>'
 			+'<font size=2>&nbsp;&nbsp;'+previousPagesTotal+' 次来自站内页面<br/>&nbsp;&nbsp;'+websiteTotal+' 次来自网站</br>&nbsp;&nbsp;'+visits+' 次来自直接访问<br/>&nbsp;&nbsp;'+loops+' 次刷新页面<br/></font>'
 			+'出口流量<br/>'
