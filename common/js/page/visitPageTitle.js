@@ -2,10 +2,23 @@ var visitModuleData = null; // 受访页面模块原始数据
 $(function(){
 	idSite = getQueryString("siteId");
 	t = getQueryString("t");
-	//默认最近7天
-	$("#date").html(getDateStr(-6)+" ~ "+getDateStr(0));
-    	$("#startDate").val(getDateStr(-6));
-	$("#endDate").val(getDateStr(0));
+	grade = getQueryString("grade");
+	sd = getQueryString("sd");
+	ed = getQueryString("ed");
+	//有开始结束时间则以有的为准，否则默认最近7天
+	if(grade=="no" && sd!=null && ed!=null){
+		$("#dateDiv button").removeClass("active");
+		$("#btn_grade").removeClass("active");
+		$("#btn_nograde").addClass("active");
+		$("#visitModuleIndex").val("nograde");
+		$("#date").html(sd+" ~ "+ed);
+		$("#startDate").val(sd);
+		$("#endDate").val(ed);
+	}else{
+		$("#date").html(getDateStr(-6)+" ~ "+getDateStr(0));
+	    	$("#startDate").val(getDateStr(-6));
+		$("#endDate").val(getDateStr(0));
+	}
 	
 	var visitModulePieChart = null;
 	init_pie();
@@ -258,7 +271,7 @@ function anaCsTable(){
 		for(var k in visitModuleData){
 			var row = visitModuleData[k];
 			var label = "<span title='"+row.label+"'>"+cutStr(row.label,80)+"</span>";
-			var href = "moduleUpDown.html?siteId="+idSite+"&t="+t+"&startDate="+sd+"&endDate="+ed+"&module="+encodeURIComponent(row.label);
+			var href = "moduleUpDown.html?siteId="+idSite+"&t="+t+"&grade=no&startDate="+sd+"&endDate="+ed+"&module="+encodeURIComponent(row.label);
 			var plus = "<a href='"+href+"' title='查看模块上下游'><span class='glyphicon glyphicon-random'></span></a>";
 			var nh = row.nb_hits;
 			var nv = row.nb_visits;

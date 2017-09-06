@@ -4,9 +4,17 @@ $(function(){
 	module = decodeURIComponent(getQueryString("module"));
 	startDate = getQueryString("startDate");
 	endDate = getQueryString("endDate");
+	grade = getQueryString("grade");
 	$("#date").html(startDate+" ~ "+endDate);
 	$("#trendUrl").html(cutStr(module,80));
     ajaxMind();
+    $("#returnVisitModule").click(function(){
+    		if(grade == "no"){
+    			window.location.href="visitPageTitle.html?siteId="+idSite+"&t="+t+"&grade="+grade+"&sd="+startDate+"&ed="+endDate;
+    		}else{
+    			window.history.back();
+    		}
+    });
 });		
 
 // 请求页面上下游数据
