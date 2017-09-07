@@ -17,6 +17,10 @@ $(document).ready(function(){
 	var map_distribution_chart = null;
 	init_mapDistribution();
 	ajax_mapDistribution();
+	// 加载top10最优性能页面
+	top10WellPage();
+	// 加载top10最差性能页面
+	top10BadPage();
 });
 // 图表自适应
 window.onresize = function(){
@@ -62,6 +66,10 @@ function changeDate(date){
 	top10Entry();
 	// 加载地域分布
 	ajax_mapDistribution();
+	// 加载top10最优性能页面
+	top10WellPage();
+	// 加载top10最差性能页面
+	top10BadPage();
 }
 // 访客趋势图start
 // 初始化访客趋势图
@@ -303,7 +311,7 @@ function top10Visit(){
 // 跳转受访页面
 function jumpVisitPage(){
 	parent.changeMenu("menu-child-33");
-	window.location.href = "m3/visitPage.html?siteId="+idSite+"&t="+t;
+	window.location.href = "m3/visitPage.html?siteId="+idSite+"&t="+t+"&source=page";
 }
 // Top10受访页面end
    
@@ -457,3 +465,73 @@ function jumpDistrict(){
 	window.location.href = "m4/district.html?siteId="+idSite+"&t="+t;
 }
 // 地图分布end
+
+// Top10最优性能页面start
+function top10WellPage(){
+	var date = $("#date").val(); // 日期
+	var p_1 = "module=API&method=Actions.getPageUrls&idSite="+idSite+"&period=range&date="+date+"&format=json&token_auth="+t+"&filter_limit=10&filter_sort_column=avg_time_generation&filter_sort_order=asc";
+	var urls = new Array();
+	urls.push(encodeURI(p_1));
+	var p = getBulkRequestParam(urls);
+	ajax_jsonp(piwik_url,p,function(data){
+		data = eval(data);
+		var pages = data[0];
+		var tbodyHtml = "";
+		for(var k in pages){
+			var page = pages[k];
+			var label = page.label;
+			// label最长42字符
+			if(getStrLength(label) > 42){
+				label = cutStr(label,42);
+			}
+			var url = page.url;
+			var atg = page.avg_time_generation;
+			tbodyHtml += "<tr>";
+			tbodyHtml += "<td title='"+url+"'><a target='_blank' href='"+url+"'>"+label+"</a></td>";
+			tbodyHtml += "<td align='center'>"+atg+"</td>";
+			tbodyHtml += "</tr>";
+		}
+		$("#top10_wellPage_tbody").html(tbodyHtml);
+	});
+}
+// 跳转受访页面
+function jumpWellPage(){
+	parent.changeMenu("menu-child-33");
+	window.location.href = "m3/visitPage.html?siteId="+idSite+"&t="+t+"&source=wellPage";
+}
+// Top10最优性能页面end
+
+// Top10最差性能页面start
+function top10BadPage(){
+	var date = $("#date").val(); // 日期
+	var p_1 = "module=API&method=Actions.getPageUrls&idSite="+idSite+"&period=range&date="+date+"&format=json&token_auth="+t+"&filter_limit=10&filter_sort_column=avg_time_generation&filter_sort_order=desc";
+	var urls = new Array();
+	urls.push(encodeURI(p_1));
+	var p = getBulkRequestParam(urls);
+	ajax_jsonp(piwik_url,p,function(data){
+		data = eval(data);
+		var pages = data[0];
+		var tbodyHtml = "";
+		for(var k in pages){
+			var page = pages[k];
+			var label = page.label;
+			// label最长42字符
+			if(getStrLength(label) > 42){
+				label = cutStr(label,42);
+			}
+			var url = page.url;
+			var atg = page.avg_time_generation;
+			tbodyHtml += "<tr>";
+			tbodyHtml += "<td title='"+url+"'><a target='_blank' href='"+url+"'>"+label+"</a></td>";
+			tbodyHtml += "<td align='center'>"+atg+"</td>";
+			tbodyHtml += "</tr>";
+		}
+		$("#top10_badPage_tbody").html(tbodyHtml);
+	});
+}
+// 跳转受访页面
+function jumpBadPage(){
+	parent.changeMenu("menu-child-33");
+	window.location.href = "m3/visitPage.html?siteId="+idSite+"&t="+t+"&source=badPage";
+}
+// Top10最差性能页面end

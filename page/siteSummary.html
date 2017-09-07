@@ -19,7 +19,7 @@
 		.overview-gap {clear: both; background-color: #ececec; height: 16px;}
 		.overview-detail{}
 		.control-bar-wrapper{border: 1px solid #dfe0e0; padding: 0;background-color: #fff;}
-		.index-site{background-color: #ececec; height: 810px;}
+		.index-site{background-color: #ececec; height: 1210px;}
 		.table-grid-item {margin-top: 1px; background-color: #fff; height: 392px;}
 		#today-flow-table tr.thead td{border-top:0px;} 
     </style>
@@ -160,7 +160,55 @@
 						</div>
 					</div>
 				</div>
-				
+				<div class="overview-gap"></div>
+				<div class="third-row">
+					<div style="float: left;width: 49%;">
+						<div class="table-grid-item">
+							<div class="title" style="height: 35px;">
+								<div style="float: left;font-weight: bold;font-size: 14px;padding: 5px 0 0 10px;">Top10最优性能页面</div>
+								<div style="float: right;padding: 5px 10px 0 0;">
+									<a href="javascript:jumpWellPage();" title="详情"><span class="glyphicon glyphicon-chevron-right"></span></a>
+								</div>
+								<div style="clear: both;"></div>
+							</div>
+							<div id="top10_wellPage" style="height:355px;padding: 0 10px 0 10px;" class="table-responsive">
+							  	<table class="table table-condensed">
+									<thead>
+										<tr>
+											<th width="75%">页面</th>
+											<th width="25%">平均生成时长(秒)</th>
+										</tr>
+									</thead>
+									<tbody id="top10_wellPage_tbody">
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+					<div style="float: right;width: 49%;">
+						<div class="table-grid-item">
+							<div class="title" style="height: 35px;">
+								<div style="float: left;font-weight: bold;font-size: 14px;padding: 5px 0 0 10px;">Top10最差性能页面</div>
+								<div style="float: right;padding: 5px 10px 0 0;">
+									<a href="javascript:jumpBadPage();" title="详情"><span class="glyphicon glyphicon-chevron-right"></span></a>
+								</div>
+								<div style="clear: both;"></div>
+							</div>
+							<div id="top10_badPage" style="height:355px;padding: 0 10px 0 10px;" class="table-responsive">
+							  	<table class="table table-condensed">
+									<thead>
+										<tr>
+											<th width="75%">页面</th>
+											<th width="25%">平均生成时长(秒)</th>
+										</tr>
+									</thead>
+									<tbody id="top10_badPage_tbody">
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>

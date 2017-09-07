@@ -291,7 +291,7 @@ function initCsTable(csData){
 	var headers = [];
 	//if(visitModuleIndex == "grade"){
 		customHeader = "<thead>"
-						+"<tr><th rowspan='2' colspan='2'>受访页面模块</th><th colspan='2'>网站基础指标</th><th colspan='4'>流量质量指标</th></tr>"
+						+"<tr><th rowspan='2' colspan='2'>受访模块</th><th colspan='2'>网站基础指标</th><th colspan='4'>流量质量指标</th></tr>"
 						+"<tr><th title='页面被查看的次数。用户多次打开同一页面，浏览量值累计。'>浏览量</th>"
 						+"<th title='浏览了该页面的访问次数。如果一次访问中多次浏览同一页面，只统计一次。'>唯一页面浏览量</th>"
 						+"<th title='访客在一次访问中，平均打开网站的时长。'>平均访问时长</th>"
@@ -299,7 +299,7 @@ function initCsTable(csData){
 						+"<th title='查看该页面后离开网站的百分比。'>退出率</th>"
 						+"<th title='生成页面的平均时间。'>平均生成时长(秒)</th>"
 						+"</tr></thead>";
-		headers = ["受访页面模块", "", "浏览量", "唯一页面浏览量", "平均访问时长", "跳出率","退出率","平均生成时长(秒)"];
+		headers = ["受访模块", "", "浏览量", "唯一页面浏览量", "平均访问时长", "跳出率","退出率","平均生成时长(秒)"];
 //	}else if(visitModuleIndex == "nograde"){
 //		customHeader = "<thead>"
 //						+"<tr><th rowspan='2'>受访页面模块</th><th colspan='2'>网站基础指标</th><th colspan='4'>流量质量指标</th></tr>"
@@ -310,7 +310,7 @@ function initCsTable(csData){
 //						+"<th title='查看该页面后离开网站的百分比。'>退出率</th>"
 //						+"<th title='生成页面的平均时间。'>平均生成时长(秒)</th>"
 //						+"</tr></thead>";
-//		headers = ["受访页面模块", "浏览量", "唯一页面浏览量", "平均访问时长", "跳出率","退出率","平均生成时长(秒)"];
+//		headers = ["受访模块", "浏览量", "唯一页面浏览量", "平均访问时长", "跳出率","退出率","平均生成时长(秒)"];
 //	}
 	
 	var cs = new table({

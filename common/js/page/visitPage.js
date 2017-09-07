@@ -1,8 +1,10 @@
+var source = "";// 入口类型page、wellPage、badPage
 $(function(){
 	idSite = getQueryString("siteId");
 	t = getQueryString("t");
 	sd = getQueryString("startDate");
 	ed = getQueryString("endDate");
+	source = getQueryString("source");
 	
 	//有开始结束时间则以有的为准，否则默认最近7天
 	if(sd != null && ed != null){
@@ -73,7 +75,19 @@ function ajaxCsTable(){
 	var csData = [];
 	var startDate = $("#startDate").val();
 	var endDate = $("#endDate").val();
-	var param = {module:'API',method:'Actions.getPageUrls',idSite:idSite,period:'range',date:startDate+","+endDate,format:'json',token_auth:t,filter_sort_column:'nb_hits',filter_sort_order:'desc'};
+	var filter_sort_column = "";
+	var filter_sort_order = "";
+	if(source == "wellPage"){
+		filter_sort_column = "avg_time_generation";
+		filter_sort_order = "asc";
+	}else if(source == "badPage"){
+		filter_sort_column = "avg_time_generation";
+		filter_sort_order = "desc";
+	}else{
+		filter_sort_column = "nb_hits";
+		filter_sort_order = "desc";
+	}
+	var param = {module:'API',method:'Actions.getPageUrls',idSite:idSite,period:'range',date:startDate+","+endDate,format:'json',token_auth:t,filter_sort_column:filter_sort_column,filter_sort_order:filter_sort_order};
 	ajax_jsonp(piwik_url, param, function(data){
 		data = eval(data);
 		for(var k in data){
