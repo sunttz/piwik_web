@@ -237,7 +237,7 @@ function ajax_visit(){
 			}
 			option = {
 				legend: {data:["平均访问时长(秒)"]},
-				tooltip:{formatter:function(params){return params[0].name + ' <br/>' + params[0].seriesName + ": " + params[0].value;}},
+				tooltip:{formatter:function(params){return params[0].name + ' <br/>' + params[0].seriesName + ": " + formatTime(params[0].value);}},
 		    		xAxis: {data:categories},
 		    		yAxis: {axisLabel:{formatter: '{value}'}},
 		    		series:[{name:'平均访问时长(秒)',type:'line',stack: '平均访问时长(秒)',itemStyle:{normal:{color: '#87CEEB',lineStyle:{color:'#87CEEB'}}},

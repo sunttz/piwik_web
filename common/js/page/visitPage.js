@@ -75,8 +75,8 @@ function ajaxCsTable(){
 	var csData = [];
 	var startDate = $("#startDate").val();
 	var endDate = $("#endDate").val();
-	var filter_sort_column = "";
-	var filter_sort_order = "";
+	var filter_sort_column = ""; // 排序字段
+	var filter_sort_order = ""; // 升序降序
 	if(source == "wellPage"){
 		filter_sort_column = "avg_time_generation";
 		filter_sort_order = "asc";
