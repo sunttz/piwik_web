@@ -107,7 +107,7 @@
 						        		}else{
 						        			clearCookie("rememberName");
 						        		}
-						        		// 跳转首页
+						        		// 跳转首页，30分钟内免登陆
 						        		setCookie("userName",userName, 30);
 						        		setCookie("user_token_auth",token_auth_tmp, 30);
 						        		setCookie("sites",JSON.stringify(data),30);
