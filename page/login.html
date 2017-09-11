@@ -15,7 +15,7 @@
   	<script type="text/javascript" src="../common/lib/md5.js"></script>
   </head>
   
-  <body class="login-bg">
+  <body class="login-bg" onkeydown="keyLogin();">
     <div class="login-box">
         <header>
             <h1>网站访问统计系统</h1>
@@ -120,6 +120,11 @@
         		});
         }
         
+        function keyLogin(){
+		 	if (event.keyCode==13){
+		 		submit();
+		 	}
+		}
     </script>
   </body>
   
