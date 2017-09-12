@@ -88,7 +88,7 @@ function initPie(){
 	    grid: {
 	        top: '3%',
 	    },
-	    series: [{type:'pie',radius: ['50%', '70%'],label: {normal: {show: true,formatter: '{d}%'}},data:[]}]
+	    series: [{type:'pie',radius: ['40%', '60%'],label: {normal: {show: true,formatter: '{d}%'}},data:[]}]
 	};
 	entryPie.setOption(option);
 }
