@@ -272,14 +272,15 @@ function anaCsTable(){
 			var row = visitModuleData[k];
 			var label = "<span title='"+row.label+"'>"+cutStr(row.label,80)+"</span>";
 			var href = "moduleUpDown.html?siteId="+idSite+"&t="+t+"&grade=no&startDate="+sd+"&endDate="+ed+"&module="+encodeURIComponent(row.label);
-			var plus = "<a href='"+href+"' title='查看模块上下游'><span class='glyphicon glyphicon-random'></span></a>";
+			// 由于页面模块名称改为手动设置，模块上下游无法显示，故隐藏
+			// var plus = "<a href='"+href+"' title='查看模块上下游'><span class='glyphicon glyphicon-random'></span></a>";
 			var nh = row.nb_hits;
 			var nv = row.nb_visits;
 			var atop = formatTime(row.avg_time_on_page);
 			var br = row.bounce_rate;
 			var er = row.exit_rate;
 			var atg = row.avg_time_generation;
-			csData.push({label:label,plus:plus,nh:nh,nv:nv,atop:atop,br:br,er:er,atg:atg});
+			csData.push({label:label,plus:'',nh:nh,nv:nv,atop:atop,br:br,er:er,atg:atg});
 		}
 	}
 	initCsTable(csData);

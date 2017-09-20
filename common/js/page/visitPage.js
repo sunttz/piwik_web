@@ -87,7 +87,7 @@ function ajaxCsTable(){
 		filter_sort_column = "nb_hits";
 		filter_sort_order = "desc";
 	}
-	var param = {module:'API',method:'Actions.getPageUrls',idSite:idSite,period:'range',date:startDate+","+endDate,format:'json',token_auth:t,filter_sort_column:filter_sort_column,filter_sort_order:filter_sort_order};
+	var param = {module:'API',method:'Actions.getPageUrls',idSite:idSite,period:'range',date:startDate+","+endDate,format:'json',token_auth:t,filter_sort_column:filter_sort_column,filter_sort_order:filter_sort_order,flat:'1'};
 	ajax_jsonp(piwik_url, param, function(data){
 		data = eval(data);
 		for(var k in data){
