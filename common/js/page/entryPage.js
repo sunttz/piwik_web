@@ -159,6 +159,9 @@ function ajaxPieLine(){
 				for(var i=0;i<top10Urls.length;i++){
 					var url = top10Urls[i];
 					lineData[url] = data[i];
+					if(i > 2){
+						break;
+					}
 				}
 				refreshPieLine();
 			});
@@ -278,7 +281,7 @@ function ajaxCsTable(){
 	var csData = [];
 	var startDate = $("#startDate").val();
 	var endDate = $("#endDate").val();
-	var param = {module:'API',method:'Actions.getEntryPageUrls',idSite:idSite,period:'range',date:startDate+','+endDate,format:'json',token_auth:t,filter_sort_column:'entry_nb_visits',filter_sort_order:'desc'};
+	var param = {module:'API',method:'Actions.getEntryPageUrls',idSite:idSite,period:'range',date:startDate+','+endDate,format:'json',token_auth:t,filter_sort_column:'entry_nb_visits',filter_sort_order:'desc',flat:'1'};
 	ajax_jsonp(piwik_url,param,function(data){
 		data = eval(data);
 		for(var k in data){
