@@ -129,7 +129,7 @@ function initLine(){
 function ajaxPieLine(){
 	var startDate = $("#startDate").val();
 	var endDate = $("#endDate").val();
-	var param = {module:'API',method:'Actions.getEntryPageUrls',idSite:idSite,period:'range',date:startDate+","+endDate,format:'json',token_auth:t,filter_limit:'10',filter_sort_column:'entry_nb_visits',filter_sort_order:'desc'};
+	var param = {module:'API',method:'Actions.getEntryPageUrls',idSite:idSite,period:'range',date:startDate+","+endDate,format:'json',token_auth:t,filter_limit:'10',filter_sort_column:'entry_nb_visits',filter_sort_order:'desc',flat:'1'};
 	entryPie.showLoading();
 	entryLine.showLoading();
 	ajax_jsonp(piwik_url,param,function(data){

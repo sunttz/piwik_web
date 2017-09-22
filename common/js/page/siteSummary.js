@@ -278,7 +278,7 @@ function jumpTrend(){
 // Top10受访页面start
 function top10Visit(){
 	var date = $("#date").val(); // 日期
-	var p_1 = "module=API&method=Actions.getPageUrls&idSite="+idSite+"&period=range&date="+date+"&format=json&token_auth="+t+"&filter_limit=10&filter_sort_column=nb_hits&filter_sort_order=desc";
+	var p_1 = "module=API&method=Actions.getPageUrls&idSite="+idSite+"&period=range&date="+date+"&format=json&token_auth="+t+"&filter_limit=10&filter_sort_column=nb_hits&filter_sort_order=desc&flat=1";
 	var p_2 = "module=API&method=MultiSites.getOne&idSite="+idSite+"&period=range&date="+date+"&format=JSON&token_auth="+t;
 	var urls = new Array();
 	urls.push(encodeURI(p_1));
@@ -319,7 +319,7 @@ function jumpVisitPage(){
 function top10Entry(){
 	var date = $("#date").val(); // 日期
 	var p_1 = "module=API&method=Actions.getEntryPageUrls&idSite="+idSite+"&period=range&date="+date+"&format=JSON&token_auth="+t;
-	var p_2 = "module=API&method=Actions.getEntryPageUrls&idSite="+idSite+"&period=range&date="+date+"&format=JSON&token_auth="+t+"&filter_limit=10&filter_sort_column=entry_nb_visits&filter_sort_order=desc";
+	var p_2 = "module=API&method=Actions.getEntryPageUrls&idSite="+idSite+"&period=range&date="+date+"&format=JSON&token_auth="+t+"&filter_limit=10&filter_sort_column=entry_nb_visits&filter_sort_order=desc&flat=1";
 	var urls = new Array();
 	urls.push(encodeURI(p_1));
 	urls.push(encodeURI(p_2));
@@ -469,7 +469,7 @@ function jumpDistrict(){
 // Top10最优性能页面start
 function top10WellPage(){
 	var date = $("#date").val(); // 日期
-	var p_1 = "module=API&method=Actions.getPageUrls&idSite="+idSite+"&period=range&date="+date+"&format=json&token_auth="+t+"&filter_limit=10&filter_sort_column=avg_time_generation&filter_sort_order=asc";
+	var p_1 = "module=API&method=Actions.getPageUrls&idSite="+idSite+"&period=range&date="+date+"&format=json&token_auth="+t+"&filter_limit=10&filter_sort_column=avg_time_generation&filter_sort_order=asc&flat=1";
 	var urls = new Array();
 	urls.push(encodeURI(p_1));
 	var p = getBulkRequestParam(urls);
@@ -504,7 +504,7 @@ function jumpWellPage(){
 // Top10最差性能页面start
 function top10BadPage(){
 	var date = $("#date").val(); // 日期
-	var p_1 = "module=API&method=Actions.getPageUrls&idSite="+idSite+"&period=range&date="+date+"&format=json&token_auth="+t+"&filter_limit=10&filter_sort_column=avg_time_generation&filter_sort_order=desc";
+	var p_1 = "module=API&method=Actions.getPageUrls&idSite="+idSite+"&period=range&date="+date+"&format=json&token_auth="+t+"&filter_limit=10&filter_sort_column=avg_time_generation&filter_sort_order=desc&flat=1";
 	var urls = new Array();
 	urls.push(encodeURI(p_1));
 	var p = getBulkRequestParam(urls);
